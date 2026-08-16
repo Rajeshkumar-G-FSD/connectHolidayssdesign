@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Bookmark, ArrowRight, Play, Pause } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Bookmark, ArrowRight } from 'lucide-react';
 import { ContinentRegion, DestinationCard } from '../types';
 
 interface HeroExploreProps {
@@ -12,6 +12,14 @@ interface HeroExploreProps {
   savedCardIds: string[];
   onToggleSaveCard: (id: string, e: React.MouseEvent) => void;
 }
+
+// Staggered card sizing for the filmstrip: tall / short / tall, showing exactly
+// 3 slides at once, bottom-aligned with staggered tops (matching reference).
+const CARD_SIZES = [
+  { wrapper: 'w-[200px] sm:w-[230px] lg:w-[250px]', image: 'h-[340px] sm:h-[400px] lg:h-[440px]' },
+  { wrapper: 'w-[165px] sm:w-[185px] lg:w-[200px]', image: 'h-[290px] sm:h-[330px] lg:h-[360px]' },
+  { wrapper: 'w-[185px] sm:w-[210px] lg:w-[230px]', image: 'h-[340px] sm:h-[400px] lg:h-[440px]' },
+];
 
 export const HeroExplore: React.FC<HeroExploreProps> = ({
   regions,
@@ -26,7 +34,6 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
-  const cardScrollRef = useRef<HTMLDivElement>(null);
 
   const totalCards = currentRegion.destinations.length;
   const currentCardNumber = (activeCardIndex + 1).toString().padStart(2, '0');
@@ -36,6 +43,12 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
   const activeDestination = currentRegion.destinations[activeCardIndex] || currentRegion.destinations[0];
   const currentLargeBg = activeDestination ? activeDestination.image : currentRegion.bgImage;
 
+  // The active card plus its next few neighbors, shown side-by-side as a filmstrip
+  const visibleCards = CARD_SIZES.map((size, i) => {
+    const actualIndex = (activeCardIndex + i) % totalCards;
+    return { card: currentRegion.destinations[actualIndex], actualIndex, size };
+  }).filter((entry) => entry.card);
+
   // Preload all 7 images for seamless instant background crossfading
   useEffect(() => {
     currentRegion.destinations.forEach((dest) => {
@@ -44,33 +57,32 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
     });
   }, [currentRegion]);
 
-  // Auto-advance slide every 3 seconds
+  // Keep a live ref of the active card index so the interval below can read it
+  // without needing to restart every 3s tick (which would jitter the cadence)
+  const activeCardIndexRef = useRef(activeCardIndex);
+  useEffect(() => {
+    activeCardIndexRef.current = activeCardIndex;
+  }, [activeCardIndex]);
+
+  // Auto-advance slide every 3 seconds; once the last card in a continent is
+  // reached, automatically roll over to the next continent and keep looping
   useEffect(() => {
     if (isPaused) return;
 
     const interval = setInterval(() => {
-      setActiveCardIndex((prev) => {
-        const next = (prev + 1) % totalCards;
-        return next;
-      });
+      const next = activeCardIndexRef.current + 1;
+      if (next >= totalCards) {
+        const nextRegionIdx = (currentRegionIndex + 1) % regions.length;
+        onSelectRegionIndex(nextRegionIdx);
+        setActiveCardIndex(0);
+      } else {
+        setActiveCardIndex(next);
+      }
       setProgressKey((k) => k + 1);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isPaused, totalCards, currentRegionIndex]);
-
-  // Smooth scroll carousel when active card changes
-  useEffect(() => {
-    if (cardScrollRef.current) {
-      const activeCardElement = cardScrollRef.current.children[activeCardIndex] as HTMLElement;
-      if (activeCardElement) {
-        cardScrollRef.current.scrollTo({
-          left: activeCardElement.offsetLeft - 40,
-          behavior: 'smooth',
-        });
-      }
-    }
-  }, [activeCardIndex]);
+  }, [isPaused, totalCards, currentRegionIndex, regions.length, onSelectRegionIndex]);
 
   // Next / Previous region handlers
   const handleNextRegion = () => {
@@ -115,26 +127,40 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
       id="hero-exact-viewport"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full h-screen min-h-[640px] max-h-[1080px] overflow-hidden select-none bg-neutral-950 text-white flex flex-col justify-between"
+      className="relative isolate w-full h-screen min-h-[640px] max-h-[1080px] overflow-hidden select-none bg-neutral-950 text-white flex flex-col justify-between"
     >
-      {/* Full Large Dynamic Background: Immediately displays the current active / 1st slide image */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+      {/* Full Large Dynamic Background: current active image, with a hazy fog blur across the top fading into a sharp, clear image lower down */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <AnimatePresence mode="popLayout">
           <motion.div
             key={`hero-bg-${currentRegion.id}-${activeDestination?.id || activeCardIndex}`}
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
-            style={{
-              backgroundImage: `url('${currentLargeBg}')`,
-            }}
+            className="absolute inset-0 will-change-transform"
           >
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-100 sm:scale-105 lg:scale-110 transition-transform duration-700 ease-out"
+              style={{
+                backgroundImage: `url('${currentLargeBg}')`,
+              }}
+            />
+
             {/* Cinematic subtle vignette and gradient for ultra-crisp white text readability */}
-            <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/15 to-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/35" />
+            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-black/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
+
+            {/* Foggy blur across the top third, clearing to a sharp photo below */}
+            <div
+              className="absolute inset-x-0 top-0 h-[46%] backdrop-blur-xl"
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 0%, black 35%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 35%, transparent 100%)',
+              }}
+            />
+            <div className="absolute inset-x-0 top-0 h-[50%] bg-gradient-to-b from-white/20 via-white/10 to-transparent" />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -168,13 +194,13 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
 
       {/* Main Content Layout */}
       <div className="w-full h-full max-w-[1720px] mx-auto px-6 sm:px-14 lg:px-20 pt-28 pb-10 flex flex-col justify-between z-10">
-        
-        {/* Main Grid: Left Continent Hierarchy + Right Multi-Card Slider */}
+
+        {/* Main Grid: Left Continent Hierarchy + Right Multi-Card Filmstrip */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto w-full">
-          
+
           {/* Left Column: Vertical Region Text Stack (Africa -> Asia -> Australia) */}
           <div className="lg:col-span-5 xl:col-span-5 pl-4 sm:pl-8 flex flex-col justify-center">
-            
+
             {/* Ghost Previous Continent (e.g. Africa) */}
             <div
               onClick={handlePrevRegion}
@@ -191,7 +217,7 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.4 }}
-                className="text-6xl sm:text-7xl lg:text-8xl xl:text-[96px] font-extrabold text-white tracking-tight font-['Outfit',sans-serif] drop-shadow-md leading-none py-1"
+                className="text-6xl sm:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[130px] font-extrabold text-white tracking-tight font-['Outfit',sans-serif] drop-shadow-md leading-none py-1"
               >
                 {currentRegion.name}
               </motion.h1>
@@ -211,22 +237,18 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
               </motion.p>
             </AnimatePresence>
 
-            {/* Explore Button matching exact green pill in screenshot */}
-            <div className="mt-6 sm:mt-8 flex items-center gap-4">
+            {/* Explore Button: solid sage pill with an attached circular arrow accent, matching screenshot */}
+            <div className="mt-6 sm:mt-8">
               <button
                 id="hero-exact-explore-btn"
                 onClick={() => onExploreContinent(currentRegion)}
-                className="group inline-flex items-center gap-6 px-7 py-3.5 rounded-2xl bg-[#2e5d48]/85 hover:bg-[#254d3b]/95 border border-emerald-400/25 text-white font-medium text-sm backdrop-blur-md shadow-lg shadow-black/30 transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-98"
+                className="group relative inline-flex items-center h-12 sm:h-[54px] pl-6 sm:pl-7 pr-1.5 rounded-full bg-[#4f7c66] hover:bg-[#436b57] text-white font-medium text-sm shadow-lg shadow-black/25 transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-98"
               >
-                <span>Explore</span>
-                <ArrowRight className="w-4 h-4 text-emerald-200 group-hover:translate-x-1 transition-transform" />
+                <span className="mr-9 sm:mr-11">Explore</span>
+                <span className="flex h-9 w-9 sm:h-[42px] sm:w-[42px] items-center justify-center rounded-full bg-[#6f9f87] group-hover:bg-[#7cae93] transition-all duration-200">
+                  <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+                </span>
               </button>
-
-              {/* 3s Auto-rotation cycle indicator badge */}
-              <div className="text-[11px] text-white/60 font-mono flex items-center gap-1.5 bg-black/30 px-3 py-1.5 rounded-xl backdrop-blur-sm border border-white/10">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>3s Autoplay ({currentCardNumber}/07)</span>
-              </div>
             </div>
 
             {/* Ghost Next Continent (e.g. Australia) */}
@@ -239,126 +261,83 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
 
           </div>
 
-          {/* Right Column: Multi-Card Horizontal Carousel with 7 items */}
-          <div className="lg:col-span-7 xl:col-span-7 overflow-visible">
-            
-            <div
-              ref={cardScrollRef}
-              className="flex items-start gap-5 sm:gap-6 overflow-x-auto pb-4 pt-2 scrollbar-none scroll-smooth"
-            >
-              {currentRegion.destinations.map((card, idx) => {
-                const isSaved = savedCardIds.includes(card.id);
-                const isFeatured = idx === activeCardIndex;
-
-                return (
-                  <motion.div
-                    key={card.id}
-                    layout
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.35, delay: idx * 0.05 }}
-                    onClick={() => {
-                      setActiveCardIndex(idx);
-                      setProgressKey((k) => k + 1);
-                      onSelectCard(card);
-                    }}
-                    className={`flex-shrink-0 w-[230px] sm:w-[250px] lg:w-[260px] cursor-pointer group transition-all duration-300 ${
-                      isFeatured
-                        ? 'scale-100 opacity-100 ring-2 ring-emerald-400 rounded-3xl shadow-[0_0_25px_rgba(52,211,153,0.35)]'
-                        : 'opacity-75 hover:opacity-100 hover:scale-[1.02]'
-                    }`}
-                  >
-                    {/* Top Title Text & 5 Dots (matching screenshot) */}
-                    <div className="mb-2.5 px-1 min-h-[46px] flex flex-col justify-end">
-                      <h4 className={`text-sm font-semibold tracking-wide truncate drop-shadow-sm font-['Outfit',sans-serif] ${
-                        isFeatured ? 'text-emerald-300 font-bold' : 'text-white'
-                      }`}>
-                        {card.title}
-                      </h4>
-
-                      {/* 5 Pagination / Rating Dots */}
-                      <div className="flex items-center gap-1 mt-1">
-                        {[...Array(5)].map((_, dotIdx) => (
-                          <span
-                            key={dotIdx}
-                            className={`w-1.5 h-1.5 rounded-full transition-all ${
-                              dotIdx < card.ratingDots
-                                ? isFeatured ? 'bg-emerald-400' : 'bg-white'
-                                : 'bg-white/30'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Card Body with Rounded Corners & Photo */}
-                    <div className="relative w-full aspect-[9/13.5] rounded-3xl overflow-hidden shadow-2xl border border-white/20 bg-neutral-900">
-                      
-                      <img
-                        src={card.image}
-                        alt={card.title}
-                        className={`w-full h-full object-cover transition-transform duration-700 ease-out ${
-                          isFeatured ? 'scale-105' : 'group-hover:scale-105'
-                        }`}
-                        loading="lazy"
-                      />
-
-                      {/* Subtle dark gradient scrim */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/15" />
-
-                      {/* Top-Right Circular White Bookmark Button (matching screenshot) */}
-                      <button
-                        onClick={(e) => onToggleSaveCard(card.id, e)}
-                        title={isSaved ? 'Remove favorite' : 'Save to favorites'}
-                        className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-md cursor-pointer z-10 ${
-                          isSaved
-                            ? 'bg-rose-500 text-white'
-                            : 'bg-white text-neutral-900 hover:bg-neutral-100'
-                        }`}
-                      >
-                        <Bookmark
-                          className={`w-4 h-4 ${isSaved ? 'fill-current' : 'fill-neutral-900 stroke-neutral-900'}`}
-                        />
-                      </button>
-
-                      {/* Bottom Quick Info overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-neutral-950/90 to-transparent">
-                        <span className="text-[11px] font-semibold text-emerald-300 block truncate">
-                          {card.location}
-                        </span>
-                        <div className="flex items-center justify-between text-xs text-white mt-1">
-                          <span className="font-bold">${card.pricePerNight}/night</span>
-                          <span className="text-emerald-400 font-semibold group-hover:underline">Explore →</span>
+          {/* Right Column: horizontal filmstrip of destination cards, bottom-aligned with staggered heights */}
+          <div className="lg:col-span-7 xl:col-span-7 relative min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-end justify-start overflow-hidden">
+            <div className="flex items-end gap-4 sm:gap-5 lg:gap-6">
+              <AnimatePresence initial={false}>
+                {visibleCards.map(({ card, actualIndex, size }, i) => {
+                  const isActive = i === 0;
+                  const isSaved = savedCardIds.includes(card.id);
+                  return (
+                    <motion.div
+                      key={card.id}
+                      layout
+                      initial={{ opacity: 0, x: 28 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -18 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className={`shrink-0 flex flex-col gap-2.5 ${size.wrapper}`}
+                    >
+                      {/* Title + rating dots sit above the photo, matching screenshot */}
+                      <div>
+                        <h4 className="text-white text-[13px] sm:text-sm font-semibold leading-snug truncate drop-shadow-sm">
+                          {card.title}
+                        </h4>
+                        <div className="mt-1.5 flex items-center gap-1">
+                          {[...Array(5)].map((_, dotIdx) => (
+                            <span
+                              key={dotIdx}
+                              className={`h-1.5 w-1.5 rounded-full ${dotIdx < card.ratingDots ? 'bg-white' : 'bg-white/30'}`}
+                            />
+                          ))}
                         </div>
                       </div>
 
-                    </div>
-                  </motion.div>
-                );
-              })}
+                      {/* Photo card */}
+                      <div
+                        onClick={() => {
+                          if (isActive) {
+                            onSelectCard(card);
+                          } else {
+                            setActiveCardIndex(actualIndex);
+                            setProgressKey((k) => k + 1);
+                          }
+                        }}
+                        className={`relative rounded-[1.5rem] overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.45)] cursor-pointer group ${size.image} ${isActive ? 'ring-2 ring-white/70' : ''}`}
+                      >
+                        <img
+                          src={card.image}
+                          alt={card.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleSaveCard(card.id, e);
+                          }}
+                          title={isSaved ? 'Remove favorite' : 'Save to favorites'}
+                          className={`absolute top-3 right-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110 ${isSaved ? 'bg-rose-500 text-white' : 'bg-white text-neutral-900'}`}
+                        >
+                          <Bookmark className={`h-3.5 w-3.5 ${isSaved ? 'fill-current' : 'fill-neutral-900 stroke-neutral-900'}`} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
-
           </div>
 
         </div>
 
         {/* Bottom Bar: Center Arrows Navigation + Bottom Right Timeline (01 —————— 07) */}
-        <div className="w-full flex items-center justify-between pt-4 relative">
-          
-          {/* Left Play/Pause Toggle */}
-          <div className="hidden sm:flex items-center gap-2">
-            <button
-              onClick={() => setIsPaused(!isPaused)}
-              title={isPaused ? 'Resume 3s auto slideshow' : 'Pause slideshow'}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-xs text-white/80 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              {isPaused ? <Play className="w-3 h-3 text-emerald-400" /> : <Pause className="w-3 h-3 text-white" />}
-              <span>{isPaused ? 'Play' : 'Pause'}</span>
-            </button>
-          </div>
+        <div className="w-full grid grid-cols-3 items-center pt-4">
+
+          {/* Left spacer keeps the arrow cluster visually centered */}
+          <div />
 
           {/* Center Circular Navigation Arrows (matching screenshot) */}
-          <div className="flex items-center gap-3 mx-auto">
+          <div className="flex items-center gap-3 justify-self-center">
             {/* Left Circular Arrow */}
             <button
               id="hero-center-prev-btn"
@@ -381,7 +360,7 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
           </div>
 
           {/* Bottom-Right Timeline Pagination: "01 —————— 07" with 3s continuous progress bar (matching screenshot) */}
-          <div className="flex items-center gap-3 text-xs sm:text-sm font-mono text-white/90 font-medium">
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-mono text-white/90 font-medium justify-self-end">
             <span className="text-white font-bold">{currentCardNumber}</span>
             <div className="w-16 sm:w-24 h-[2px] bg-white/30 rounded-full relative overflow-hidden">
               {/* Animated Progress Bar representing 3-second cycle */}
