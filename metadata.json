@@ -1,0 +1,6 @@
+{
+  "name": "DreamHomesStay",
+  "description": "Luxury boutique escapes, cliffside villas, and tea estate retreats worldwide.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

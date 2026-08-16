@@ -1,0 +1,391 @@
+import { Destination } from '../types';
+
+export const DESTINATIONS: Destination[] = [
+  {
+    id: 'nilgiri-heights',
+    slug: 'nilgiri-heights-ooty',
+    name: 'Nilgiri Heights',
+    location: 'Ooty, Tamil Nadu',
+    region: 'Nilgiri Hills',
+    country: 'India',
+    tag: 'OOTY, INDIA',
+    rating: 4.9,
+    reviewCount: 128,
+    pricePerNight: 480,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Infinity pool over tea estate
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=85', // Luxury resort balcony
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=85', // Luxury terrace view
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=85', // Resort pool deck morning
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=85', // Grand villa architecture
+    ],
+    vibe: 'Tea Estate & Misty Mountain Infinity Pool',
+    category: 'tea_estate',
+    shortDescription: 'Handcrafted cedar & stone estate floating above emerald tea plantations with private heated infinity pool.',
+    description: 'Perched majestically at 7,200 feet amidst rolling emerald tea terraces of the Nilgiri hills, Nilgiri Heights is an exclusive sanctuary designed for tranquility and understated luxury. Wake up to swirling valley mist rolling across hundred-year-old tea bushes, swim in your private cantilevered heated infinity pool above the clouds, and enjoy bespoke single-origin tea tastings beside roaring stone fireplaces.',
+    stats: {
+      guests: 6,
+      bedrooms: 3,
+      beds: 4,
+      bathrooms: 3.5,
+      elevation: '7,200 ft',
+    },
+    amenities: [
+      { name: 'Private Heated Infinity Pool', icon: 'Waves', description: 'Overlooking panoramic tea slopes and misty peaks' },
+      { name: 'Artisan Fireplace Master Suite', icon: 'Flame', description: 'Handmade stone hearth with aromatic cedar firewood' },
+      { name: 'Estate Tea Sommelier', icon: 'Coffee', description: 'Private tasting of reserve Nilgiri white and green teas' },
+      { name: 'Private Butler & Chef', icon: 'UtensilsCrossed', description: 'Farm-to-table gourmet organic mountain cuisine' },
+      { name: 'Panoramic Sun Deck', icon: 'Sun', description: 'Furnished teak lounge deck facing sunrise over valleys' },
+      { name: 'High-Speed Starlink WiFi', icon: 'Wifi', description: 'Seamless 200+ Mbps connection even high in the hills' },
+      { name: 'Hydrotherapy Jacuzzi Tub', icon: 'Sparkles', description: 'Deep soaking tub with floor-to-ceiling forest vistas' },
+      { name: 'Private Nature & Tea Trails', icon: 'Compass', description: 'Direct walking access through pristine private estate' },
+    ],
+    experiences: [
+      { title: 'Sunrise Tea Plucking & Tasting Tour', description: 'Walk with the estate master tea artisan through morning dew and pick fresh two-leaves-and-a-bud.', duration: '2 Hours', included: true },
+      { title: 'Twilight Deck Barbecue & Wine Pairing', description: 'Four-course curated wood-fire dinner on the open deck under starry mountain skies.', duration: '3 Hours', included: false },
+      { title: 'Toda Tribal Heritage & Shola Forest Trek', description: 'Guided ecological expedition into endemic biosphere flora and wildlife sanctuaries.', duration: '4 Hours', included: true },
+      { title: 'In-Villa Ayurvedic Rejuvenation Spa', description: 'Traditional herbal oil therapy and warm stone massage beside the crackling fireplace.', duration: '90 Mins', included: false },
+    ],
+    host: {
+      name: 'Aditya & Catherine Menon',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      role: 'Estate Owners & Conservationists',
+      isSuperhost: true,
+      responseRate: '100% within an hour',
+      languages: ['English', 'Tamil', 'Hindi', 'French'],
+    },
+    coordinates: { lat: 11.4102, lng: 76.695 },
+    reviews: [
+      {
+        id: 'rev-1',
+        author: 'Eleanor Vance',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+        date: 'October 2025',
+        rating: 5.0,
+        comment: 'Nilgiri Heights is pure magic. Sitting on the heated pool edge watching the morning clouds drift beneath our feet was an unforgettable memory. The private chef prepared incredible meals every single day.',
+      },
+      {
+        id: 'rev-2',
+        author: 'Marcus Lindqvist',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+        date: 'December 2025',
+        rating: 4.9,
+        comment: 'The level of architecture and woodwork is stunning. Fireplaces in each bedroom, pristine silence, and the private tea tour opened our eyes to artisanal teas. Absolute 10/10 stay.',
+      },
+      {
+        id: 'rev-3',
+        author: 'Priya Narayanan',
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
+        date: 'January 2026',
+        rating: 5.0,
+        comment: 'Even more beautiful than the photographs. The hospitality of Aditya and the estate staff made our anniversary trip extraordinary. We will definitely return!',
+      },
+    ],
+  },
+  {
+    id: 'costa-verde-sanctuary',
+    slug: 'costa-verde-rainforest-sanctuary',
+    name: 'Costa Verde Sanctuary',
+    location: 'Manuel Antonio',
+    region: 'Puntarenas Coast',
+    country: 'Costa Rica',
+    tag: 'MANUEL ANTONIO, COSTA RICA',
+    rating: 4.95,
+    reviewCount: 164,
+    pricePerNight: 620,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=85', // Jungle ocean view
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1920&q=85', // Cliffside resort
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1920&q=85', // Sunset infinity pool
+      'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1920&q=85', // Ocean cove
+    ],
+    vibe: 'Jungle Cliffside & Waterfall Ocean Retreat',
+    category: 'rainforest',
+    shortDescription: 'Multi-tiered cantilevered rainforest villa suspended between cascading waterfalls and turquoise Pacific waters.',
+    description: 'Immerse yourself in lush biodiversity where untamed jungle meets the Pacific Ocean. Suspended high in the tropical canopy, Costa Verde Sanctuary features cascading natural waterfalls pouring directly into tier-carved plunge pools, open-air teak pavilions, and visits from friendly toucans and capuchin monkeys at dawn.',
+    stats: {
+      guests: 8,
+      bedrooms: 4,
+      beds: 5,
+      bathrooms: 4,
+      elevation: '450 ft',
+    },
+    amenities: [
+      { name: 'Dual Multi-Tier Infinity Pools', icon: 'Waves', description: 'Directly overlooking private ocean cove and waterfall' },
+      { name: 'Open-Air Teak Pavilion', icon: 'Wind', description: 'Natural sea breezes with 270-degree canopy views' },
+      { name: 'Private Trail to Secluded Beach', icon: 'Compass', description: '10-minute rainforest boardwalk down to golden sand' },
+      { name: 'Private Mixologist & Chef', icon: 'UtensilsCrossed', description: 'Fresh seafood ceviche and tropical fruit cocktail service' },
+      { name: 'Open Sky Rain Showers', icon: 'Sparkles', description: 'Outdoor lava rock showers under lush banana palms' },
+      { name: 'High-Speed Starlink WiFi', icon: 'Wifi', description: 'Fast connection across all terrace pavilions' },
+    ],
+    experiences: [
+      { title: 'Rainforest Canopy Night Walk', description: 'Spot bioluminescent fungi, tree frogs, and nocturnal wildlife with an expert naturalist.', duration: '2 Hours', included: true },
+      { title: 'Private Catamaran & Snorkel Charter', description: 'Sail out along Manuel Antonio national park coves with dolphin watching.', duration: '4 Hours', included: false },
+      { title: 'Waterfall Yoga & Meditation Deck', description: 'Morning guided vinyasa flow with natural waterfall white-noise.', duration: '1 Hour', included: true },
+    ],
+    host: {
+      name: 'Sofia Calderon',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+      role: 'Biologist & Eco-Architect',
+      isSuperhost: true,
+      responseRate: '99% within 30 mins',
+      languages: ['Spanish', 'English', 'German'],
+    },
+    coordinates: { lat: 9.3874, lng: -84.1481 },
+    reviews: [
+      {
+        id: 'rev-c1',
+        author: 'David Sterling',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+        date: 'November 2025',
+        rating: 5.0,
+        comment: 'Staying in the middle of the rainforest with luxury comforts is surreal. Watching the sunset from the cantilevered pool while scarlet macaws flew overhead was the highlight of our year.',
+      },
+    ],
+  },
+  {
+    id: 'cloud-mist-chalet',
+    slug: 'cloud-mist-chalet-munnar',
+    name: 'Cloud Mist Chalet',
+    location: 'Munnar, Kerala',
+    region: 'Western Ghats',
+    country: 'India',
+    tag: 'MUNNAR, INDIA',
+    rating: 4.92,
+    reviewCount: 96,
+    pricePerNight: 420,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1920&q=85', // Munnar mist hills
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=85', // Misty landscape
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool view
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=85', // Balcony
+    ],
+    vibe: 'Cloud Forest & Spice Plantation Hideaway',
+    category: 'tea_estate',
+    shortDescription: 'Floating timber pavilion above swirling cloud banks and cardamom scented hill slopes.',
+    description: 'Nestled on the high ridges of Munnar, Cloud Mist Chalet offers breathtaking 360-degree views of rolling cloud beds and spice valleys. Built with reclaimed cedar wood, massive picture windows, and an outdoor hot tub overlooking tea waterfalls.',
+    stats: {
+      guests: 4,
+      bedrooms: 2,
+      beds: 2,
+      bathrooms: 2,
+      elevation: '6,400 ft',
+    },
+    amenities: [
+      { name: 'Cedar Hot Tub on Cliff Deck', icon: 'Waves', description: 'Soak in steamy water while mist drifts past your shoulders' },
+      { name: 'Organic Spice Garden Tour', icon: 'Compass', description: 'Fresh cardamom, wild pepper, and cinnamon tastings' },
+      { name: 'Glass Floor Observation Lounge', icon: 'Eye', description: 'Look down into the lush rainforest canopy below' },
+      { name: 'Keralan Culinary Masterclass', icon: 'UtensilsCrossed', description: 'Cook authentic appams and fish curry with private chef' },
+      { name: 'High-Speed Starlink WiFi', icon: 'Wifi', description: 'Seamless coverage for remote work or stream relaxation' },
+    ],
+    experiences: [
+      { title: 'Anamudi Peak Ridge Trek', description: 'Guided sunrise hike to the highest peak in South India.', duration: '5 Hours', included: true },
+      { title: 'Private Star Gazing & Campfire', description: 'Telescope astronomy session above the fog ceiling with roasted marshmallows.', duration: '2 Hours', included: true },
+    ],
+    host: {
+      name: 'Rohan & Maya Thomas',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+      role: 'Third-Generation Planters',
+      isSuperhost: true,
+      responseRate: '100% within 15 mins',
+      languages: ['English', 'Malayalam', 'Hindi'],
+    },
+    coordinates: { lat: 10.0889, lng: 77.0595 },
+    reviews: [
+      {
+        id: 'rev-m1',
+        author: 'Claire Beaumont',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        date: 'January 2026',
+        rating: 5.0,
+        comment: 'Waking up to clouds flowing right into the valley outside our bed was deeply peaceful. The staff prepared the most heartwarming meals. Truly heaven on earth.',
+      },
+    ],
+  },
+  {
+    id: 'amalfi-azure-villa',
+    slug: 'amalfi-azure-cliffside-villa',
+    name: 'Villa Azzurra Positano',
+    location: 'Positano, Campania',
+    region: 'Amalfi Coast',
+    country: 'Italy',
+    tag: 'POSITANO, ITALY',
+    rating: 4.98,
+    reviewCount: 210,
+    pricePerNight: 890,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1920&q=85', // Amalfi coastal cliff
+      'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1920&q=85', // Italian coast
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1920&q=85', // Resort pool
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=85', // Ocean
+    ],
+    vibe: 'Mediterranean Cliff & Lemon Grove Haven',
+    category: 'cliffside',
+    shortDescription: 'Cliff-carved historic Italian villa with panoramic Tyrrhenian sea infinity pool and private Riva speedboat.',
+    description: 'Chiseled into the sheer limestone cliffs above pastel Positano, Villa Azzurra is an architectural jewel. Surrounded by fragrant lemon pergolas and bougainvillea terraces, enjoy unhindered sea views from every suite and your own private funicular down to the sparkling sea.',
+    stats: {
+      guests: 6,
+      bedrooms: 3,
+      beds: 3,
+      bathrooms: 3.5,
+      elevation: '320 ft',
+    },
+    amenities: [
+      { name: 'Cliff-Edge Heated Infinity Pool', icon: 'Waves', description: 'Gaze at the yachts anchored in Positano bay' },
+      { name: 'Private Riva Speedboat & Captain', icon: 'Anchor', description: 'Direct excursions to Capri and hidden sea grottos' },
+      { name: 'Neapolitan Wood-Fired Pizza Oven', icon: 'Flame', description: 'Authentic sourdough pizza nights on the lemon terrace' },
+      { name: 'Private Funicular & Sea Access', icon: 'Compass', description: 'Private lift down to private sunbathing platform' },
+      { name: 'Sommelier Wine Cellar', icon: 'Wine', description: 'Curated collection of Brunello, Barolo, and Campania vintages' },
+    ],
+    experiences: [
+      { title: 'Private Sunset Capri Yacht Cruise', description: 'Cruise around Faraglioni rocks with prosecco and antipasti.', duration: '4 Hours', included: false },
+      { title: 'Lemon Grove Limoncello Workshop', description: 'Pick organic lemons and distill traditional liqueur with Nonna Elena.', duration: '2 Hours', included: true },
+    ],
+    host: {
+      name: 'Gianluigi De Luca',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+      role: 'Architect & Amalfi Native',
+      isSuperhost: true,
+      responseRate: '100% within 10 mins',
+      languages: ['Italian', 'English', 'Spanish'],
+    },
+    coordinates: { lat: 40.6281, lng: 14.485 },
+    reviews: [
+      {
+        id: 'rev-a1',
+        author: 'Julian Armstrong',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+        date: 'September 2025',
+        rating: 5.0,
+        comment: 'There are no words for the view from the infinity pool at sunset. The staff made us feel like royalty. Unrivaled experience.',
+      },
+    ],
+  },
+  {
+    id: 'kintamani-bamboo-haven',
+    slug: 'kintamani-bamboo-pavilion-bali',
+    name: 'Kintamani Bamboo Haven',
+    location: 'Ubud, Gianyar',
+    region: 'Ayung River Valley',
+    country: 'Indonesia',
+    tag: 'UBUD, BALI',
+    rating: 4.91,
+    reviewCount: 182,
+    pricePerNight: 390,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=85', // Bali lush
+      'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1920&q=85', // Bali landscape
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool
+    ],
+    vibe: 'Bamboo Masterpiece & River Valley Plunge Pool',
+    category: 'rainforest',
+    shortDescription: 'Curvilinear organic bamboo villa hovering over sacred jungle ravines with private spring-fed pool.',
+    description: 'An architectural tribute to sustainable design, hand-crafted entirely from curving giant black bamboo. Perched above the sacred Ayung river valley, enjoy open-air living with hammocks over the gorge and natural spring mineral pools.',
+    stats: {
+      guests: 4,
+      bedrooms: 2,
+      beds: 2,
+      bathrooms: 2,
+      elevation: '1,800 ft',
+    },
+    amenities: [
+      { name: 'Spring-Fed River Plunge Pool', icon: 'Waves', description: 'Fresh mountain water pool overlooking the jungle ravine' },
+      { name: 'Floating Breakfast Experience', icon: 'UtensilsCrossed', description: 'Handcrafted tropical smoothie bowls served in the pool' },
+      { name: 'Over-Gorge Suspended Hammock Net', icon: 'Wind', description: 'Relax 80 feet above the lush river canopy' },
+      { name: 'Balinese Sound Bath & Yoga Shala', icon: 'Sparkles', description: 'Tibetan singing bowls and daily morning yoga' },
+    ],
+    experiences: [
+      { title: 'Sacred Water Blessing Ceremony', description: 'Visit Sebatu holy water temple with a local priest.', duration: '3 Hours', included: true },
+      { title: 'Tirta Gangga & Rice Terrace E-Bike Trek', description: 'Cycle through UNESCO protected heritage green paddies.', duration: '3.5 Hours', included: false },
+    ],
+    host: {
+      name: 'Wayan & Sarah Sutama',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      role: 'Bamboo Designers',
+      isSuperhost: true,
+      responseRate: '100% within 1 hour',
+      languages: ['Indonesian', 'English'],
+    },
+    coordinates: { lat: -8.5069, lng: 115.2625 },
+    reviews: [
+      {
+        id: 'rev-b1',
+        author: 'Elena Rostova',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+        date: 'December 2025',
+        rating: 5.0,
+        comment: 'Sleeping to the sound of the river and waking up to the green jungle valley was transformative. The bamboo craftsmanship is unmatched.',
+      },
+    ],
+  },
+  {
+    id: 'hakone-pine-villa',
+    slug: 'hakone-mount-fuji-pine-villa',
+    name: 'Hakone Pine Sanctuary',
+    location: 'Hakone, Kanagawa',
+    region: 'Mount Fuji Foothills',
+    country: 'Japan',
+    tag: 'HAKONE, JAPAN',
+    rating: 4.97,
+    reviewCount: 140,
+    pricePerNight: 750,
+    currency: '$',
+    coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=85',
+    gallery: [
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=85', // Japan mountain
+      'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1920&q=85', // Japan traditional
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool
+    ],
+    vibe: 'Private Natural Onsen & Zen Cedar Architecture',
+    category: 'mountain',
+    shortDescription: 'Traditional Sukiya-style residence with private outdoor Hinoki wood hot springs overlooking Mount Fuji.',
+    description: 'Serenity redefined. Nestled in a thousand-year-old pine forest, Hakone Pine Sanctuary features private volcanic thermal mineral onsen baths, tatami tea rooms, Shoji screens, and private multi-course Kaiseki dinners.',
+    stats: {
+      guests: 5,
+      bedrooms: 2,
+      beds: 4,
+      bathrooms: 2.5,
+      elevation: '2,600 ft',
+    },
+    amenities: [
+      { name: 'Private Volcanic Mineral Onsen', icon: 'Waves', description: 'Continuous flow natural geothermal hot spring baths' },
+      { name: 'Hinoki Cypress Soaking Tub', icon: 'Sparkles', description: 'Aromatic wood tubs overlooking private moss garden' },
+      { name: 'Multi-Course Kaiseki Dining', icon: 'UtensilsCrossed', description: 'Seasonal artistry prepared by private master chef' },
+      { name: 'Matcha Tea Pavilion', icon: 'Coffee', description: 'Traditional ceremony hosted by licensed Urasenke master' },
+      { name: 'Tatami Lounge & Fire Pit', icon: 'Flame', description: 'Warm evening tea around traditional Irori hearth' },
+    ],
+    experiences: [
+      { title: 'Lake Ashi Private Wooden Boat Cruise', description: 'Glide across misty volcanic waters with Mount Fuji reflections.', duration: '2.5 Hours', included: true },
+      { title: 'Zen Meditation with Temple Abbot', description: 'Private mindfulness session in 600-year-old mountain monastery.', duration: '90 Mins', included: true },
+    ],
+    host: {
+      name: 'Kenzo & Yuka Tanaka',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+      role: 'Ryokan Custodians & Artisans',
+      isSuperhost: true,
+      responseRate: '100% within 15 mins',
+      languages: ['Japanese', 'English'],
+    },
+    coordinates: { lat: 35.2324, lng: 139.1069 },
+    reviews: [
+      {
+        id: 'rev-h1',
+        author: 'Arthur Pendelton',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+        date: 'January 2026',
+        rating: 5.0,
+        comment: 'Soaking in the private outdoor onsen while light snow dusted the pine needles was the most tranquil experience of my life.',
+      },
+    ],
+  },
+];
