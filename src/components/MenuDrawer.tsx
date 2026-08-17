@@ -1,7 +1,10 @@
 import React from 'react';
-import { X, Compass, Globe, Luggage, Heart, Shield, Mail, Phone, ExternalLink } from 'lucide-react';
+import { X, Compass, Globe, Luggage, Heart, Shield, Mail, Phone, ExternalLink, Facebook, Instagram } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ActiveTab, ContinentRegion } from '../types';
+
+const FACEBOOK_URL = 'https://www.facebook.com/connectholidaysserd/';
+const INSTAGRAM_URL = 'https://www.instagram.com/connect_holidayss/';
 
 interface MenuDrawerProps {
   isOpen: boolean;
@@ -38,10 +41,8 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
           {/* Top Bar */}
           <div className="flex items-center justify-between pb-6 border-b border-white/10">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full border border-white flex items-center justify-center">
-                <div className="w-2.5 h-2.5 bg-white rounded-full" />
-              </div>
-              <span className="text-lg font-bold font-['Outfit',sans-serif]">AroundMe</span>
+              <img src="/images/connect_holidayss.png" alt="Connect Holidayss" className="h-8 w-auto" />
+              <span className="text-lg font-bold font-['Outfit',sans-serif]">Connect Holidayss</span>
             </div>
             <button
               onClick={onClose}
@@ -120,8 +121,28 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
 
         {/* Footer info */}
         <div className="pt-6 border-t border-white/10 text-xs text-neutral-400">
-          <p className="font-light">AroundMe Curated Travel Experience</p>
-          <p className="text-[11px] text-neutral-500 mt-1">24/7 Global Sanctuary Concierge</p>
+          <div className="flex items-center gap-2 mb-4">
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Connect Holidayss on Facebook"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#1877F2] flex items-center justify-center text-white transition-colors"
+            >
+              <Facebook className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Connect Holidayss on Instagram"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] flex items-center justify-center text-white transition-colors"
+            >
+              <Instagram className="w-3.5 h-3.5" />
+            </a>
+          </div>
+          <p className="font-light">Connect Holidayss Curated Travel Experience</p>
+          <p className="text-[11px] text-neutral-500 mt-1">We Lead, You Relax</p>
         </div>
       </motion.div>
     </div>

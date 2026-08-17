@@ -29,25 +29,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       className="fixed top-0 left-0 right-0 z-40 px-6 sm:px-12 lg:px-16 py-6 transition-all duration-300 bg-transparent"
     >
       <div className="w-full flex items-center justify-between">
-        {/* Left: Brand Logo matching AroundMe emblem in screenshot */}
+        {/* Left: Brand Logo — Connect Holidayss */}
         <div
-          id="aroundme-brand-logo"
+          id="connect-holidayss-brand-logo"
           onClick={() => setActiveTab('home')}
-          className="flex items-center gap-2.5 cursor-pointer select-none group"
+          className="flex items-center cursor-pointer select-none group"
         >
-          {/* Circular AroundMe symbol: Circle with inner triangle/peak */}
-          <div className="w-8 h-8 rounded-full border-[2.2px] border-white flex items-center justify-center transition-transform group-hover:scale-105">
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-3.5 h-3.5 text-white"
-            >
-              <path d="M12 4L3 19h18L12 4zm0 4.5l5.2 8.5H6.8L12 8.5z" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white font-['Outfit',sans-serif]">
-            AroundMe
-          </span>
+          <img
+            src="/images/connect_holidayss.png"
+            alt="Connect Holidayss"
+            className="h-11 sm:h-12 w-auto drop-shadow-md transition-transform group-hover:scale-105"
+          />
         </div>
 
         {/* Center Navigation: News, Favorites, Contact (matching screenshot) */}
