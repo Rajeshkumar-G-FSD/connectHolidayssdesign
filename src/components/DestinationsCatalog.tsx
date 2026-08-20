@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Destination } from '../types';
-import { Star, Bookmark, MapPin, Users, Bed, Bath, ArrowUpRight, Filter, Sparkles, Compass, Check, ArrowRight } from 'lucide-react';
+import { WorldTourPackage } from '../data/worldTourPackages';
+import { Star, Bookmark, MapPin, Users, Bed, Bath, Filter, Sparkles, Compass, ArrowRight, Search, Heart, Scale, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface DestinationsCatalogProps {
   destinations: Destination[];
+  worldTours: WorldTourPackage[];
   onOpenDetail: (destination: Destination) => void;
   savedIds: string[];
   onToggleSave: (id: string, e: React.MouseEvent) => void;
@@ -13,16 +15,24 @@ interface DestinationsCatalogProps {
 
 export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
   destinations,
+  worldTours,
   onOpenDetail,
   savedIds,
   onToggleSave,
   currency,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCollection, setSelectedCollection] = useState<'india' | 'south-india' | 'worldwide'>('india');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<number>(1000);
   const [sortBy, setSortBy] = useState<'recommended' | 'price-low' | 'price-high' | 'rating'>('recommended');
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+  const [wishlistOnly, setWishlistOnly] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+
+  const formatINR = (amount: number) => new Intl.NumberFormat('en-IN', {
+    style: 'currency', currency: 'INR', maximumFractionDigits: 0,
+  }).format(amount * 86);
 
   const categories = [
     { id: 'all', label: 'All Escapes' },
@@ -34,6 +44,9 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
 
   const filteredDestinations = destinations
     .filter((d) => {
+      const matchCollection = selectedCollection === 'worldwide'
+        || (selectedCollection === 'india' && d.country === 'India')
+        || (selectedCollection === 'south-india' && d.country === 'India' && /ooty|munnar|kerala|nilgiri/i.test(`${d.location} ${d.region}`));
       const matchCategory = selectedCategory === 'all' || d.category === selectedCategory;
       const matchSearch =
         d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,7 +54,8 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
         d.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
         d.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
       const matchPrice = d.pricePerNight <= maxPrice;
-      return matchCategory && matchSearch && matchPrice;
+      const matchWishlist = !wishlistOnly || savedIds.includes(d.id);
+      return matchCollection && matchCategory && matchSearch && matchPrice && matchWishlist;
     })
     .sort((a, b) => {
       if (sortBy === 'price-low') return a.pricePerNight - b.pricePerNight;
@@ -49,6 +63,17 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0;
     });
+
+  const toggleCompare = (id: string) => {
+    setCompareIds((current) => current.includes(id)
+      ? current.filter((item) => item !== id)
+      : [...current.slice(-1), id]);
+  };
+  const comparedPackages = destinations.filter((destination) => compareIds.includes(destination.id));
+  const filteredWorldTours = worldTours.filter((tour) => {
+    const query = searchQuery.toLowerCase();
+    return !query || `${tour.country} ${tour.location} ${tour.places}`.toLowerCase().includes(query);
+  });
 
   return (
     <div id="destinations-catalog-page" className="min-h-screen bg-neutral-950 text-white pt-24 pb-20 px-6 sm:px-10 lg:px-12">
@@ -59,13 +84,13 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-2">
               <Compass className="w-4 h-4" />
-              <span>Worldwide Collection</span>
+              <span>India & Worldwide Tour Collection</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Outfit',sans-serif] tracking-tight">
               Curated Dream Escapes
             </h2>
             <p className="mt-2 text-neutral-400 max-w-xl text-sm sm:text-base font-light">
-              Explore boutique tea estate mansions, misty rainforest sanctuaries, and cliffside private pool villas.
+              Handpicked 5 nights / 6 days journeys with Indian-rupee pricing and location-led stays.
             </p>
           </div>
 
@@ -87,6 +112,45 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
             >
               Interactive Map
             </button>
+          </div>
+        </div>
+
+        {/* Tour collection chooser */}
+        <div className="grid gap-3 py-7 sm:grid-cols-3">
+          {[
+            { id: 'india', title: 'India', count: '20 locations', copy: 'Classic holidays across India' },
+            { id: 'south-india', title: 'South India', count: '30 locations', copy: 'Kerala, Tamil Nadu & hill escapes' },
+            { id: 'worldwide', title: 'Worldwide Tour', count: '100 locations', copy: 'International handpicked tours' },
+          ].map((collection) => (
+            <button
+              key={collection.id}
+              onClick={() => setSelectedCollection(collection.id as typeof selectedCollection)}
+              className={`rounded-2xl border p-5 text-left transition-all ${selectedCollection === collection.id ? 'border-emerald-400 bg-emerald-400/10 shadow-lg shadow-emerald-950/30' : 'border-white/10 bg-neutral-900/70 hover:border-white/30'}`}
+            >
+              <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">{collection.count}</span>
+              <h3 className="mt-2 text-xl font-bold">{collection.title}</h3>
+              <p className="mt-1 text-xs text-neutral-400">{collection.copy}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Requested trip tools */}
+        <div className="mb-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-neutral-900/70 px-4 py-3">
+            <Search className="h-4 w-4 shrink-0 text-emerald-400" />
+            <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search location" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-neutral-500" />
+          </label>
+          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-neutral-900/70 px-4 py-3 text-sm text-neutral-300">
+            <Filter className="h-4 w-4 text-emerald-400" />
+            <span>Filters</span><span className="ml-auto text-xs text-neutral-500">Type & price</span>
+          </div>
+          <button onClick={() => setWishlistOnly((value) => !value)} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm transition-colors ${wishlistOnly ? 'border-rose-400 bg-rose-500/15 text-white' : 'border-white/10 bg-neutral-900/70 text-neutral-300 hover:border-white/30'}`}>
+            <Heart className={`h-4 w-4 ${wishlistOnly ? 'fill-rose-400 text-rose-400' : 'text-emerald-400'}`} />
+            Wishlist <span className="ml-auto text-xs">{savedIds.length}</span>
+          </button>
+          <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-neutral-900/70 px-4 py-3 text-sm text-neutral-300">
+            <Scale className="h-4 w-4 text-emerald-400" />
+            Compare Packages <span className="ml-auto text-xs">{compareIds.length}/2</span>
           </div>
         </div>
 
@@ -112,25 +176,6 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
 
           {/* Search & Sort Controls */}
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            {/* Search Input */}
-            <div className="relative flex-1 sm:w-64">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search stay or location..."
-                className="w-full bg-neutral-900/80 border border-white/15 rounded-full px-4 py-2 text-xs text-white placeholder-neutral-500 outline-none focus:border-emerald-400"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-2 text-neutral-400 hover:text-white text-xs"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
             {/* Sort Dropdown */}
             <select
               value={sortBy}
@@ -144,6 +189,87 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
             </select>
           </div>
         </div>
+
+        {/* Location-based 5N / 6D tour packages */}
+        <section className="mb-10 rounded-3xl border border-white/10 bg-neutral-900/45 p-5 sm:p-7">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">Featured itineraries</p>
+              <h3 className="mt-1 text-2xl font-bold">5 Nights / 6 Days packages</h3>
+            </div>
+            <span className="text-xs text-neutral-400">Based on your selected location</span>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredDestinations.slice(0, 3).map((destination) => {
+              const isCompared = compareIds.includes(destination.id);
+              return (
+                <article key={`package-${destination.id}`} className={`overflow-hidden rounded-2xl border bg-neutral-950/60 ${isCompared ? 'border-emerald-400' : 'border-white/10'}`}>
+                  <img src={destination.coverImage} alt={`${destination.location} tour`} className="h-36 w-full object-cover" />
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h4 className="font-bold">{destination.location}</h4>
+                        <p className="mt-1 text-xs text-neutral-400">Hotel stay · local sightseeing · breakfast</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-emerald-500/15 px-2 py-1 text-[10px] font-bold text-emerald-300">5N / 6D</span>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <span className="text-sm font-bold text-emerald-300">From {formatINR(destination.pricePerNight * 6)}</span>
+                      <button onClick={() => toggleCompare(destination.id)} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${isCompared ? 'bg-emerald-500 text-neutral-950' : 'bg-white/10 hover:bg-white/20'}`}>
+                        {isCompared ? 'Added to compare' : 'Compare'}
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          {comparedPackages.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-3 text-sm">
+              <Scale className="h-4 w-4 text-emerald-400" />
+              <span className="text-neutral-300">Comparing:</span>
+              {comparedPackages.map((destination) => <span key={destination.id} className="rounded-full bg-neutral-950 px-3 py-1 text-xs text-white">{destination.location} · {formatINR(destination.pricePerNight * 6)}</span>)}
+            </div>
+          )}
+        </section>
+
+        {selectedCollection === 'worldwide' && (
+          <section className="mb-10">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">100 worldwide locations</p>
+                <h3 className="mt-1 text-2xl font-bold">World Tour packages</h3>
+              </div>
+              <span className="text-xs text-neutral-400">{filteredWorldTours.length} matching tours</span>
+            </div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredWorldTours.map((tour) => {
+                const isCompared = compareIds.includes(tour.id);
+                return (
+                  <article key={tour.id} className={`overflow-hidden rounded-3xl border bg-neutral-900/70 ${isCompared ? 'border-emerald-400' : 'border-white/10'}`}>
+                    <img src={tour.image} alt={`${tour.location}, ${tour.country}`} className="h-48 w-full object-cover" loading="lazy" />
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">{tour.country}</p>
+                          <h4 className="mt-1 text-lg font-bold">{tour.location}</h4>
+                        </div>
+                        <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-neutral-200">4N / 5D</span>
+                      </div>
+                      <p className="mt-3 text-sm leading-relaxed text-neutral-400 line-clamp-2">{tour.places}</p>
+                      <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+                        <span className="font-bold text-emerald-300">From {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(tour.budgetINR)}</span>
+                        <button onClick={() => toggleCompare(tour.id)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isCompared ? 'bg-emerald-500 text-neutral-950' : 'bg-white/10 hover:bg-white/20'}`}>
+                          {isCompared ? 'Added' : 'Compare'}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Visual Map View (if selected) */}
         {viewMode === 'map' && (
@@ -200,7 +326,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
                         <img src={d.coverImage} alt={d.name} className="w-full h-20 object-cover rounded-lg mb-1.5" />
                         <h4 className="font-bold text-xs text-white truncate">{d.name}</h4>
                         <div className="flex items-center justify-between text-[11px] text-neutral-300 mt-0.5">
-                          <span className="text-emerald-400 font-semibold">{currency}{d.pricePerNight}/night</span>
+                          <span className="text-emerald-400 font-semibold">{formatINR(d.pricePerNight)}/night</span>
                           <span>★ {d.rating}</span>
                         </div>
                       </div>
@@ -213,7 +339,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
         )}
 
         {/* Destination Cards Grid */}
-        {filteredDestinations.length === 0 ? (
+        {selectedCollection !== 'worldwide' && (filteredDestinations.length === 0 ? (
           <div className="text-center py-20 bg-neutral-900/40 rounded-3xl border border-white/10">
             <Sparkles className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
             <h3 className="text-xl font-bold">No matching escapes found</h3>
@@ -276,7 +402,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
                     {/* Floating Price Pill */}
                     <div className="absolute bottom-3 right-4 z-10">
                       <div className="px-3 py-1 rounded-full bg-neutral-950/80 border border-white/15 backdrop-blur-md text-xs">
-                        <span className="text-emerald-400 font-bold text-sm">{currency}{destination.pricePerNight}</span>
+                        <span className="text-emerald-400 font-bold text-sm">{formatINR(destination.pricePerNight)}</span>
                         <span className="text-neutral-400 ml-1">/ night</span>
                       </div>
                     </div>
@@ -343,7 +469,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
               );
             })}
           </div>
-        )}
+        ))}
 
       </div>
     </div>

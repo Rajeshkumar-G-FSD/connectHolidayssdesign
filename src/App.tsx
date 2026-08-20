@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DESTINATIONS } from './data/destinations';
+import { WORLD_TOUR_PACKAGES } from './data/worldTourPackages';
 import { CONTINENT_REGIONS } from './data/regions';
 import { TOP_COUNTRIES } from './data/topCountries';
 import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion, TopCountry } from './types';
@@ -53,7 +54,7 @@ export default function App() {
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const [currency, setCurrency] = useState<string>('$');
+  const [currency, setCurrency] = useState<string>('₹');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
 
   // Persistence for Wishlist Saved IDs
@@ -321,6 +322,7 @@ export default function App() {
             {activeTab === 'destinations' && (
               <DestinationsCatalog
                 destinations={DESTINATIONS}
+                worldTours={WORLD_TOUR_PACKAGES}
                 onOpenDetail={(dest) => setSelectedDestination(dest)}
                 savedIds={savedIds}
                 onToggleSave={handleToggleSave}
