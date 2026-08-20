@@ -42,8 +42,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           />
         </div>
 
-        {/* Center Navigation: News, Favorites, Contact (matching screenshot) */}
+        {/* Center Navigation: About, News, Favorites, Contact */}
         <nav className="hidden md:flex items-center gap-10 text-sm font-medium">
+          <button
+            id="nav-about-btn"
+            onClick={() => setActiveTab('about')}
+            className={`transition-colors cursor-pointer ${
+              activeTab === 'about'
+                ? 'text-white font-semibold'
+                : 'text-white/80 hover:text-white'
+            }`}
+          >
+            About
+          </button>
+
           <button
             id="nav-news-btn"
             onClick={() => setActiveTab('news')}

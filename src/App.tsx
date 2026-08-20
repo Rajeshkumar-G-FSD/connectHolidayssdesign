@@ -11,17 +11,19 @@ import { SearchModal } from './components/SearchModal';
 import { MenuDrawer } from './components/MenuDrawer';
 import { NewsModal } from './components/NewsModal';
 import { ContactModal } from './components/ContactModal';
+import { AboutModal } from './components/AboutModal';
 import { ambientSound } from './utils/audio';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [regionIndex, setRegionIndex] = useState<number>(0); // 0 is Asia (index 5 of 6 matching screenshot)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
-  
+
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isNewsOpen, setIsNewsOpen] = useState<boolean>(false);
   const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
+  const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
 
   const [currency, setCurrency] = useState<string>('$');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
@@ -185,7 +187,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-emerald-600 selection:text-white">
       
-      {/* Top Navbar matching AroundMe in screenshot */}
+      {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
@@ -193,6 +195,8 @@ export default function App() {
             setIsNewsOpen(true);
           } else if (tab === 'contact') {
             setIsContactOpen(true);
+          } else if (tab === 'about') {
+            setIsAboutOpen(true);
           } else {
             setActiveTab(tab);
           }
@@ -289,6 +293,7 @@ export default function App() {
         onNavigateTab={(tab) => {
           if (tab === 'news') setIsNewsOpen(true);
           else if (tab === 'contact') setIsContactOpen(true);
+          else if (tab === 'about') setIsAboutOpen(true);
           else setActiveTab(tab);
         }}
       />
@@ -298,6 +303,13 @@ export default function App() {
 
       {/* Contact Modal */}
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        onOpenContact={() => setIsContactOpen(true)}
+      />
 
     </div>
   );

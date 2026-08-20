@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Compass, Globe, Luggage, Heart, Shield, Mail, Phone, ExternalLink, Facebook, Instagram } from 'lucide-react';
+import { X, Compass, Globe, Luggage, Heart, Shield, Mail, Phone, ExternalLink, Facebook, Instagram, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ActiveTab, ContinentRegion } from '../types';
 
@@ -81,6 +81,13 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
 
           {/* Main Navigation Links */}
           <div className="mt-8 pt-6 border-t border-white/10 space-y-3 text-sm">
+            <button
+              onClick={() => { onNavigateTab('about'); onClose(); }}
+              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
+            >
+              <Info className="w-4 h-4 text-sky-400" />
+              <span>About Us</span>
+            </button>
             <button
               onClick={() => { onNavigateTab('destinations'); onClose(); }}
               className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"

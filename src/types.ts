@@ -98,4 +98,4 @@ export interface Booking {
   guestEmail: string;
 }
 
-export type ActiveTab = 'home' | 'news' | 'favorites' | 'contact' | 'trips' | 'destinations';
+export type ActiveTab = 'home' | 'news' | 'favorites' | 'contact' | 'trips' | 'destinations' | 'about';
