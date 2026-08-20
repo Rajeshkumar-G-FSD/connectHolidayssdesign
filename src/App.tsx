@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { DESTINATIONS } from './data/destinations';
 import { CONTINENT_REGIONS } from './data/regions';
+import { TOP_COUNTRIES } from './data/topCountries';
 import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion, TopCountry } from './types';
+import {
+  TAB_TITLES,
+  getTabForPath,
+  getPathForTab,
+  getCountryIdFromPath,
+  getPathForCountry,
+  isKnownTabPath,
+} from './utils/routes';
 import { Navbar } from './components/Navbar';
 import { HeroExplore } from './components/HeroExplore';
 import { TopCountriesSection } from './components/TopCountriesSection';
@@ -29,11 +38,18 @@ import { TermsConditionsPage } from './components/pages/TermsConditionsPage';
 import { CancellationPolicyPage } from './components/pages/CancellationPolicyPage';
 import { ambientSound } from './utils/audio';
 
+// Resolve the initial view straight from the URL, so a hard refresh or a
+// direct link to e.g. /packages or /countries/japan lands on the right page.
+const getInitialCountry = (): TopCountry | null => {
+  const countryId = getCountryIdFromPath(window.location.pathname);
+  return countryId ? TOP_COUNTRIES.find((c) => c.id === countryId) ?? null : null;
+};
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [activeTab, setActiveTabState] = useState<ActiveTab>(() => getTabForPath(window.location.pathname));
   const [regionIndex, setRegionIndex] = useState<number>(0); // 0 is Asia (index 5 of 6 matching screenshot)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
-  const [selectedCountry, setSelectedCountry] = useState<TopCountry | null>(null);
+  const [selectedCountry, setSelectedCountryState] = useState<TopCountry | null>(getInitialCountry);
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -111,10 +127,62 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [activeTab, selectedCountry]);
 
-  // Navigating to any tab (nav links, footer links, drawer) exits the country detail takeover
-  const handleSetActiveTab = (tab: ActiveTab) => {
-    setSelectedCountry(null);
-    setActiveTab(tab);
+  // Keep the browser tab title in sync with whatever page is showing
+  useEffect(() => {
+    const brand = 'Connect Holidayss';
+    if (selectedCountry) {
+      document.title = `${selectedCountry.country} Packages | ${brand}`;
+    } else if (activeTab === 'home') {
+      document.title = `${brand} | We Lead, You Relax`;
+    } else {
+      document.title = `${TAB_TITLES[activeTab]} | ${brand}`;
+    }
+  }, [activeTab, selectedCountry]);
+
+  // Support the browser's Back/Forward buttons — re-sync state from the URL
+  // whenever it changes outside of our own navigate() calls.
+  useEffect(() => {
+    const handlePopState = () => {
+      const countryId = getCountryIdFromPath(window.location.pathname);
+      const country = countryId ? TOP_COUNTRIES.find((c) => c.id === countryId) ?? null : null;
+      setSelectedCountryState(country);
+      if (!country) {
+        setActiveTabState(getTabForPath(window.location.pathname));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // A direct visit to an unrecognized path (e.g. a typo) quietly settles on Home
+  // rather than leaving a dead URL showing the home page underneath it.
+  useEffect(() => {
+    const path = window.location.pathname;
+    const countryId = getCountryIdFromPath(path);
+    const validCountry = countryId ? TOP_COUNTRIES.some((c) => c.id === countryId) : false;
+    if (!validCountry && !isKnownTabPath(path)) {
+      window.history.replaceState(null, '', getPathForTab('home'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Navigate to a tab: updates state, the URL, and exits the country detail takeover
+  const navigateToTab = (tab: ActiveTab) => {
+    const path = getPathForTab(tab);
+    if (window.location.pathname !== path) {
+      window.history.pushState({ tab }, '', path);
+    }
+    setSelectedCountryState(null);
+    setActiveTabState(tab);
+  };
+
+  // Navigate to a country's detail takeover, updating the URL to /countries/:id
+  const navigateToCountry = (country: TopCountry) => {
+    const path = getPathForCountry(country.id);
+    if (window.location.pathname !== path) {
+      window.history.pushState({ countryId: country.id }, '', path);
+    }
+    setSelectedCountryState(country);
   };
 
   const handleToggleSave = (id: string, e: React.MouseEvent) => {
@@ -202,11 +270,11 @@ export default function App() {
   };
 
   const handleExploreContinent = (region: ContinentRegion) => {
-    setActiveTab('destinations');
+    navigateToTab('destinations');
   };
 
-  const goToContact = () => handleSetActiveTab('contact');
-  const goToDestinations = () => handleSetActiveTab('destinations');
+  const goToContact = () => navigateToTab('contact');
+  const goToDestinations = () => navigateToTab('destinations');
 
   const savedDestinations = DESTINATIONS.filter((d) => savedIds.includes(d.id));
 
@@ -216,7 +284,7 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={handleSetActiveTab}
+        setActiveTab={navigateToTab}
         onOpenMenu={() => setIsMenuOpen(true)}
       />
 
@@ -225,7 +293,7 @@ export default function App() {
         {selectedCountry ? (
           <CountryDetailPage
             country={selectedCountry}
-            onBack={() => setSelectedCountry(null)}
+            onBack={() => navigateToTab('home')}
             onOpenContact={goToContact}
           />
         ) : (
@@ -241,8 +309,8 @@ export default function App() {
                   savedCardIds={savedIds}
                   onToggleSaveCard={handleToggleSave}
                 />
-                <TopCountriesSection onSelectCountry={setSelectedCountry} />
-                <PackagesSection onSelectCountry={setSelectedCountry} />
+                <TopCountriesSection onSelectCountry={navigateToCountry} />
+                <PackagesSection onSelectCountry={navigateToCountry} />
                 <WorldToursSection onExplorePlace={goToContact} />
               </>
             )}
@@ -305,7 +373,7 @@ export default function App() {
         )}
       </main>
 
-      <Footer onNavigate={handleSetActiveTab} />
+      <Footer onNavigate={navigateToTab} />
 
       {/* Detailed Sanctuary Modal */}
       {selectedDestination && (
@@ -326,7 +394,7 @@ export default function App() {
         regions={CONTINENT_REGIONS}
         currentRegionIndex={regionIndex}
         onSelectRegion={setRegionIndex}
-        onNavigateTab={handleSetActiveTab}
+        onNavigateTab={navigateToTab}
         savedCount={savedIds.length}
         tripsCount={bookings.length}
       />
