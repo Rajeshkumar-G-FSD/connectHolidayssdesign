@@ -4,14 +4,26 @@ import { CONTINENT_REGIONS } from './data/regions';
 import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion } from './types';
 import { Navbar } from './components/Navbar';
 import { HeroExplore } from './components/HeroExplore';
+import { TopCountriesSection } from './components/TopCountriesSection';
 import { DestinationsCatalog } from './components/DestinationsCatalog';
 import { MyTripsView } from './components/MyTripsView';
 import { DestinationDetailModal } from './components/DestinationDetailModal';
-import { SearchModal } from './components/SearchModal';
 import { MenuDrawer } from './components/MenuDrawer';
-import { NewsModal } from './components/NewsModal';
-import { ContactModal } from './components/ContactModal';
-import { AboutModal } from './components/AboutModal';
+import { Footer } from './components/Footer';
+import { AboutPage } from './components/AboutPage';
+import { TourPackagesPage } from './components/pages/TourPackagesPage';
+import { VisaServicesPage } from './components/pages/VisaServicesPage';
+import { FlightBookingPage } from './components/pages/FlightBookingPage';
+import { HotelBookingPage } from './components/pages/HotelBookingPage';
+import { TravelInsurancePage } from './components/pages/TravelInsurancePage';
+import { GalleryPage } from './components/pages/GalleryPage';
+import { BlogPage } from './components/pages/BlogPage';
+import { FAQPage } from './components/pages/FAQPage';
+import { TestimonialsPage } from './components/pages/TestimonialsPage';
+import { ContactPage } from './components/pages/ContactPage';
+import { PrivacyPolicyPage } from './components/pages/PrivacyPolicyPage';
+import { TermsConditionsPage } from './components/pages/TermsConditionsPage';
+import { CancellationPolicyPage } from './components/pages/CancellationPolicyPage';
 import { ambientSound } from './utils/audio';
 
 export default function App() {
@@ -19,11 +31,7 @@ export default function App() {
   const [regionIndex, setRegionIndex] = useState<number>(0); // 0 is Asia (index 5 of 6 matching screenshot)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
 
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [isNewsOpen, setIsNewsOpen] = useState<boolean>(false);
-  const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
-  const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
 
   const [currency, setCurrency] = useState<string>('$');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
@@ -93,6 +101,11 @@ export default function App() {
       ambientSound.stop();
     };
   }, [soundEnabled]);
+
+  // Scroll to top whenever the active page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [activeTab]);
 
   const handleToggleSave = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -182,45 +195,40 @@ export default function App() {
     setActiveTab('destinations');
   };
 
+  const goToContact = () => setActiveTab('contact');
+  const goToDestinations = () => setActiveTab('destinations');
+
   const savedDestinations = DESTINATIONS.filter((d) => savedIds.includes(d.id));
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-emerald-600 selection:text-white">
-      
+    <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-emerald-600 selection:text-white">
+
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={(tab) => {
-          if (tab === 'news') {
-            setIsNewsOpen(true);
-          } else if (tab === 'contact') {
-            setIsContactOpen(true);
-          } else if (tab === 'about') {
-            setIsAboutOpen(true);
-          } else {
-            setActiveTab(tab);
-          }
-        }}
-        savedCount={savedIds.length}
-        tripsCount={bookings.length}
-        onOpenSearch={() => setIsSearchOpen(true)}
+        setActiveTab={setActiveTab}
         onOpenMenu={() => setIsMenuOpen(true)}
-        soundEnabled={soundEnabled}
-        setSoundEnabled={setSoundEnabled}
       />
 
       {/* Main View Display */}
-      <main>
+      <main className="flex-1">
         {activeTab === 'home' && (
-          <HeroExplore
-            regions={CONTINENT_REGIONS}
-            currentRegionIndex={regionIndex}
-            onSelectRegionIndex={setRegionIndex}
-            onExploreContinent={handleExploreContinent}
-            onSelectCard={handleSelectCard}
-            savedCardIds={savedIds}
-            onToggleSaveCard={handleToggleSave}
-          />
+          <>
+            <HeroExplore
+              regions={CONTINENT_REGIONS}
+              currentRegionIndex={regionIndex}
+              onSelectRegionIndex={setRegionIndex}
+              onExploreContinent={handleExploreContinent}
+              onSelectCard={handleSelectCard}
+              savedCardIds={savedIds}
+              onToggleSaveCard={handleToggleSave}
+            />
+            <TopCountriesSection />
+          </>
+        )}
+
+        {activeTab === 'about' && (
+          <AboutPage onOpenContact={goToContact} onExploreDestinations={goToDestinations} />
         )}
 
         {activeTab === 'destinations' && (
@@ -233,13 +241,28 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'tour-packages' && <TourPackagesPage onOpenContact={goToContact} />}
+        {activeTab === 'visa-services' && <VisaServicesPage onOpenContact={goToContact} />}
+        {activeTab === 'flight-booking' && <FlightBookingPage onOpenContact={goToContact} />}
+        {activeTab === 'hotel-booking' && <HotelBookingPage onOpenContact={goToContact} />}
+        {activeTab === 'travel-insurance' && <TravelInsurancePage onOpenContact={goToContact} />}
+        {activeTab === 'gallery' && <GalleryPage />}
+        {activeTab === 'blog' && <BlogPage />}
+        {activeTab === 'faq' && <FAQPage />}
+        {activeTab === 'testimonials' && <TestimonialsPage />}
+        {activeTab === 'contact' && <ContactPage />}
+
+        {activeTab === 'privacy-policy' && <PrivacyPolicyPage />}
+        {activeTab === 'terms-conditions' && <TermsConditionsPage />}
+        {activeTab === 'cancellation-policy' && <CancellationPolicyPage />}
+
         {activeTab === 'trips' && (
           <MyTripsView
             bookings={bookings}
             savedDestinations={savedDestinations}
             onOpenDetail={(dest) => setSelectedDestination(dest)}
             onCancelBooking={handleCancelBooking}
-            onExploreDestinations={() => setActiveTab('destinations')}
+            onExploreDestinations={goToDestinations}
             onToggleSave={handleToggleSave}
             initialTab="trips"
             currency={currency}
@@ -252,13 +275,15 @@ export default function App() {
             savedDestinations={savedDestinations}
             onOpenDetail={(dest) => setSelectedDestination(dest)}
             onCancelBooking={handleCancelBooking}
-            onExploreDestinations={() => setActiveTab('destinations')}
+            onExploreDestinations={goToDestinations}
             onToggleSave={handleToggleSave}
             initialTab="saved"
             currency={currency}
           />
         )}
       </main>
+
+      <Footer onNavigate={setActiveTab} />
 
       {/* Detailed Sanctuary Modal */}
       {selectedDestination && (
@@ -272,43 +297,16 @@ export default function App() {
         />
       )}
 
-      {/* Search Modal */}
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        destinations={DESTINATIONS}
-        onSelectDestination={(dest) => {
-          setSelectedDestination(dest);
-        }}
-        currency={currency}
-      />
-
-      {/* Right Menu Drawer */}
+      {/* Right Menu Drawer — primary navigation below the xl breakpoint */}
       <MenuDrawer
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
         regions={CONTINENT_REGIONS}
         currentRegionIndex={regionIndex}
         onSelectRegion={setRegionIndex}
-        onNavigateTab={(tab) => {
-          if (tab === 'news') setIsNewsOpen(true);
-          else if (tab === 'contact') setIsContactOpen(true);
-          else if (tab === 'about') setIsAboutOpen(true);
-          else setActiveTab(tab);
-        }}
-      />
-
-      {/* News Modal */}
-      <NewsModal isOpen={isNewsOpen} onClose={() => setIsNewsOpen(false)} />
-
-      {/* Contact Modal */}
-      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
-
-      {/* About Modal */}
-      <AboutModal
-        isOpen={isAboutOpen}
-        onClose={() => setIsAboutOpen(false)}
-        onOpenContact={() => setIsContactOpen(true)}
+        onNavigateTab={setActiveTab}
+        savedCount={savedIds.length}
+        tripsCount={bookings.length}
       />
 
     </div>

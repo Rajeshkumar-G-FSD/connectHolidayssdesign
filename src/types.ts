@@ -98,4 +98,31 @@ export interface Booking {
   guestEmail: string;
 }
 
-export type ActiveTab = 'home' | 'news' | 'favorites' | 'contact' | 'trips' | 'destinations' | 'about';
+export type ActiveTab =
+  | 'home'
+  | 'about'
+  | 'destinations'
+  | 'tour-packages'
+  | 'visa-services'
+  | 'flight-booking'
+  | 'hotel-booking'
+  | 'travel-insurance'
+  | 'gallery'
+  | 'blog'
+  | 'faq'
+  | 'testimonials'
+  | 'contact'
+  | 'favorites'
+  | 'trips'
+  | 'privacy-policy'
+  | 'terms-conditions'
+  | 'cancellation-policy';
+
+export interface TopCountry {
+  id: string;
+  rank: number;
+  flag: string;
+  country: string;
+  places: string[];
+  image: string;
+}

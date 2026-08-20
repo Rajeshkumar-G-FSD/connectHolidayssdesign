@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Bookmark, ArrowRight } from 'lucide-react';
+import { Bookmark, ArrowRight } from 'lucide-react';
 import { ContinentRegion, DestinationCard } from '../types';
 
 interface HeroExploreProps {
@@ -165,33 +165,6 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Left Rail / Vertical Index Track matching screenshot */}
-      <div className="absolute left-6 sm:left-10 top-1/2 -translate-y-1/2 flex flex-col items-center z-30 pointer-events-none">
-        {/* Vertical thin track line */}
-        <div className="relative w-[1.5px] h-48 bg-white/25 flex flex-col items-center justify-between py-1">
-          <span className="w-1 h-1 rounded-full bg-white/40" />
-          <span className="w-1 h-1 rounded-full bg-white/40" />
-
-          {/* Current index circle badge '5' */}
-          <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-[10px] font-bold text-white shadow-sm my-auto">
-            {currentRegion.indexNum}
-          </div>
-
-          <span className="w-1 h-1 rounded-full bg-white/40" />
-          <span className="w-1 h-1 rounded-full bg-white/40" />
-        </div>
-      </div>
-
-      {/* Bottom-Left Vertical Index: "05 / 06" */}
-      <div className="absolute left-6 sm:left-10 bottom-8 z-30 text-[11px] font-mono tracking-widest text-white/60 select-none flex items-center gap-2">
-        <span>0{currentRegion.indexNum} / 0{currentRegion.totalNum}</span>
-        {isPaused && (
-          <span className="px-1.5 py-0.5 rounded bg-black/40 text-[9px] uppercase tracking-wider text-amber-300">
-            Paused
-          </span>
-        )}
-      </div>
-
       {/* Main Content Layout */}
       <div className="w-full h-full max-w-[1720px] mx-auto px-6 sm:px-14 lg:px-20 pt-28 pb-10 flex flex-col justify-between z-10">
 
@@ -330,37 +303,11 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
 
         </div>
 
-        {/* Bottom Bar: Center Arrows Navigation + Bottom Right Timeline (01 —————— 07) */}
-        <div className="w-full grid grid-cols-3 items-center pt-4">
-
-          {/* Left spacer keeps the arrow cluster visually centered */}
-          <div />
-
-          {/* Center Circular Navigation Arrows (matching screenshot) */}
-          <div className="flex items-center gap-3 justify-self-center">
-            {/* Left Circular Arrow */}
-            <button
-              id="hero-center-prev-btn"
-              onClick={handlePrevCard}
-              title="Previous destination"
-              className="w-11 h-11 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-md flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 shadow-md"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            {/* Right Circular Arrow */}
-            <button
-              id="hero-center-next-btn"
-              onClick={handleNextCard}
-              title="Next destination"
-              className="w-11 h-11 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-md flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 shadow-md"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Bottom Bar: Timeline Pagination (01 —————— 07) */}
+        <div className="w-full flex items-center justify-end pt-4">
 
           {/* Bottom-Right Timeline Pagination: "01 —————— 07" with 3s continuous progress bar (matching screenshot) */}
-          <div className="flex items-center gap-3 text-xs sm:text-sm font-mono text-white/90 font-medium justify-self-end">
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-mono text-white/90 font-medium">
             <span className="text-white font-bold">{currentCardNumber}</span>
             <div className="w-16 sm:w-24 h-[2px] bg-white/30 rounded-full relative overflow-hidden">
               {/* Animated Progress Bar representing 3-second cycle */}

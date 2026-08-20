@@ -1,6 +1,10 @@
 import React from 'react';
-import { X, Compass, Globe, Luggage, Heart, Shield, Mail, Phone, ExternalLink, Facebook, Instagram, Info } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import {
+  X, Home, Info, Compass, Package, Stamp, PlaneTakeoff, Hotel, ShieldCheck,
+  Images, Newspaper, HelpCircle, MessageSquareQuote, MessageCircle,
+  Luggage, Heart, Facebook, Instagram,
+} from 'lucide-react';
+import { motion } from 'motion/react';
 import { ActiveTab, ContinentRegion } from '../types';
 
 const FACEBOOK_URL = 'https://www.facebook.com/connectholidaysserd/';
@@ -13,7 +17,31 @@ interface MenuDrawerProps {
   currentRegionIndex: number;
   onSelectRegion: (index: number) => void;
   onNavigateTab: (tab: ActiveTab) => void;
+  savedCount: number;
+  tripsCount: number;
 }
+
+const MAIN_LINKS: { tab: ActiveTab; label: string; icon: React.ElementType; color: string }[] = [
+  { tab: 'home', label: 'Home', icon: Home, color: 'text-emerald-400' },
+  { tab: 'about', label: 'About Us', icon: Info, color: 'text-sky-400' },
+  { tab: 'destinations', label: 'Destinations', icon: Compass, color: 'text-emerald-400' },
+  { tab: 'tour-packages', label: 'Tour Packages', icon: Package, color: 'text-amber-400' },
+  { tab: 'visa-services', label: 'Visa Services', icon: Stamp, color: 'text-violet-400' },
+  { tab: 'flight-booking', label: 'Flight Booking', icon: PlaneTakeoff, color: 'text-blue-400' },
+  { tab: 'hotel-booking', label: 'Hotel Booking', icon: Hotel, color: 'text-blue-400' },
+  { tab: 'travel-insurance', label: 'Travel Insurance', icon: ShieldCheck, color: 'text-emerald-400' },
+  { tab: 'gallery', label: 'Gallery', icon: Images, color: 'text-pink-400' },
+  { tab: 'blog', label: 'Blog', icon: Newspaper, color: 'text-sky-400' },
+  { tab: 'faq', label: 'FAQ', icon: HelpCircle, color: 'text-amber-400' },
+  { tab: 'testimonials', label: 'Testimonials', icon: MessageSquareQuote, color: 'text-rose-400' },
+  { tab: 'contact', label: 'Contact', icon: MessageCircle, color: 'text-emerald-400' },
+];
+
+const LEGAL_LINKS: { tab: ActiveTab; label: string }[] = [
+  { tab: 'privacy-policy', label: 'Privacy Policy' },
+  { tab: 'terms-conditions', label: 'Terms & Conditions' },
+  { tab: 'cancellation-policy', label: 'Cancellation Policy' },
+];
 
 export const MenuDrawer: React.FC<MenuDrawerProps> = ({
   isOpen,
@@ -22,8 +50,15 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
   currentRegionIndex,
   onSelectRegion,
   onNavigateTab,
+  savedCount,
+  tripsCount,
 }) => {
   if (!isOpen) return null;
+
+  const go = (tab: ActiveTab) => {
+    onNavigateTab(tab);
+    onClose();
+  };
 
   return (
     <div
@@ -35,25 +70,44 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="w-full max-w-md bg-neutral-900 border-l border-white/15 h-full p-8 flex flex-col justify-between overflow-y-auto text-white"
+        className="w-full max-w-md bg-neutral-900 border-l border-white/15 h-full flex flex-col text-white"
       >
-        <div>
-          {/* Top Bar */}
-          <div className="flex items-center justify-between pb-6 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <img src="/images/connect_holidayss.png" alt="Connect Holidayss" className="h-8 w-auto" />
-              <span className="text-lg font-bold font-['Outfit',sans-serif]">Connect Holidayss</span>
+        {/* Top Bar */}
+        <div className="flex items-center justify-between px-8 pt-8 pb-6 border-b border-white/10 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <img src="/images/connect_holidayss.png" alt="Connect Holidayss" className="h-8 w-auto" />
+            <span className="text-lg font-bold font-['Outfit',sans-serif]">Connect Holidayss</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center cursor-pointer transition-colors shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-8">
+
+          {/* Main site navigation */}
+          <div className="mt-6">
+            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-3">Menu</span>
+            <div className="space-y-1">
+              {MAIN_LINKS.map((link) => (
+                <button
+                  key={link.tab}
+                  onClick={() => go(link.tab)}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left cursor-pointer text-sm"
+                >
+                  <link.icon className={`w-4 h-4 shrink-0 ${link.color}`} />
+                  <span>{link.label}</span>
+                </button>
+              ))}
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center cursor-pointer transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Continents & Regions Switcher */}
-          <div className="mt-8">
+          <div className="mt-8 pt-6 border-t border-white/10">
             <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-3">
               Explore Continents
             </span>
@@ -63,8 +117,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   key={region.id}
                   onClick={() => {
                     onSelectRegion(idx);
-                    onNavigateTab('home');
-                    onClose();
+                    go('home');
                   }}
                   className={`w-full p-3 rounded-2xl text-left flex items-center justify-between transition-all cursor-pointer ${
                     idx === currentRegionIndex
@@ -79,55 +132,48 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
             </div>
           </div>
 
-          {/* Main Navigation Links */}
-          <div className="mt-8 pt-6 border-t border-white/10 space-y-3 text-sm">
+          {/* Utility: Trips & Favorites */}
+          <div className="mt-8 pt-6 border-t border-white/10 space-y-1 text-sm">
             <button
-              onClick={() => { onNavigateTab('about'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
+              onClick={() => go('trips')}
+              className="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left cursor-pointer"
             >
-              <Info className="w-4 h-4 text-sky-400" />
-              <span>About Us</span>
+              <span className="flex items-center gap-3">
+                <Luggage className="w-4 h-4 text-emerald-400" />
+                <span>My Trips & Itineraries</span>
+              </span>
+              {tripsCount > 0 && (
+                <span className="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-white/10 text-emerald-300">{tripsCount}</span>
+              )}
             </button>
             <button
-              onClick={() => { onNavigateTab('destinations'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
+              onClick={() => go('favorites')}
+              className="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left cursor-pointer"
             >
-              <Compass className="w-4 h-4 text-emerald-400" />
-              <span>All Destinations Catalog</span>
-            </button>
-            <button
-              onClick={() => { onNavigateTab('trips'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
-            >
-              <Luggage className="w-4 h-4 text-emerald-400" />
-              <span>My Trips & Itineraries</span>
-            </button>
-            <button
-              onClick={() => { onNavigateTab('favorites'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
-            >
-              <Heart className="w-4 h-4 text-rose-400" />
-              <span>Saved Favorites</span>
-            </button>
-            <button
-              onClick={() => { onNavigateTab('news'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
-            >
-              <Globe className="w-4 h-4 text-blue-400" />
-              <span>Travel Stories & News</span>
-            </button>
-            <button
-              onClick={() => { onNavigateTab('contact'); onClose(); }}
-              className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors text-left"
-            >
-              <Mail className="w-4 h-4 text-amber-400" />
-              <span>Concierge & Contact</span>
+              <span className="flex items-center gap-3">
+                <Heart className="w-4 h-4 text-rose-400" />
+                <span>Saved Favorites</span>
+              </span>
+              {savedCount > 0 && (
+                <span className="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-white/10 text-emerald-300">{savedCount}</span>
+              )}
             </button>
           </div>
         </div>
 
         {/* Footer info */}
-        <div className="pt-6 border-t border-white/10 text-xs text-neutral-400">
+        <div className="px-8 pt-6 pb-8 border-t border-white/10 text-xs text-neutral-400 shrink-0">
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-4">
+            {LEGAL_LINKS.map((link) => (
+              <button
+                key={link.tab}
+                onClick={() => go(link.tab)}
+                className="hover:text-emerald-400 transition-colors cursor-pointer"
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2 mb-4">
             <a
               href={FACEBOOK_URL}
