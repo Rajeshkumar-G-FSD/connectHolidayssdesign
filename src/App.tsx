@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DESTINATIONS } from './data/destinations';
 import { CONTINENT_REGIONS } from './data/regions';
-import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion } from './types';
+import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion, TopCountry } from './types';
 import { Navbar } from './components/Navbar';
 import { HeroExplore } from './components/HeroExplore';
 import { TopCountriesSection } from './components/TopCountriesSection';
+import { PackagesSection } from './components/PackagesSection';
+import { WorldToursSection } from './components/WorldToursSection';
+import { CountryDetailPage } from './components/CountryDetailPage';
 import { DestinationsCatalog } from './components/DestinationsCatalog';
 import { MyTripsView } from './components/MyTripsView';
 import { DestinationDetailModal } from './components/DestinationDetailModal';
@@ -30,6 +33,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [regionIndex, setRegionIndex] = useState<number>(0); // 0 is Asia (index 5 of 6 matching screenshot)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<TopCountry | null>(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -105,7 +109,13 @@ export default function App() {
   // Scroll to top whenever the active page changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [activeTab]);
+  }, [activeTab, selectedCountry]);
+
+  // Navigating to any tab (nav links, footer links, drawer) exits the country detail takeover
+  const handleSetActiveTab = (tab: ActiveTab) => {
+    setSelectedCountry(null);
+    setActiveTab(tab);
+  };
 
   const handleToggleSave = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -195,8 +205,8 @@ export default function App() {
     setActiveTab('destinations');
   };
 
-  const goToContact = () => setActiveTab('contact');
-  const goToDestinations = () => setActiveTab('destinations');
+  const goToContact = () => handleSetActiveTab('contact');
+  const goToDestinations = () => handleSetActiveTab('destinations');
 
   const savedDestinations = DESTINATIONS.filter((d) => savedIds.includes(d.id));
 
@@ -206,84 +216,96 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleSetActiveTab}
         onOpenMenu={() => setIsMenuOpen(true)}
       />
 
       {/* Main View Display */}
       <main className="flex-1">
-        {activeTab === 'home' && (
+        {selectedCountry ? (
+          <CountryDetailPage
+            country={selectedCountry}
+            onBack={() => setSelectedCountry(null)}
+            onOpenContact={goToContact}
+          />
+        ) : (
           <>
-            <HeroExplore
-              regions={CONTINENT_REGIONS}
-              currentRegionIndex={regionIndex}
-              onSelectRegionIndex={setRegionIndex}
-              onExploreContinent={handleExploreContinent}
-              onSelectCard={handleSelectCard}
-              savedCardIds={savedIds}
-              onToggleSaveCard={handleToggleSave}
-            />
-            <TopCountriesSection />
+            {activeTab === 'home' && (
+              <>
+                <HeroExplore
+                  regions={CONTINENT_REGIONS}
+                  currentRegionIndex={regionIndex}
+                  onSelectRegionIndex={setRegionIndex}
+                  onExploreContinent={handleExploreContinent}
+                  onSelectCard={handleSelectCard}
+                  savedCardIds={savedIds}
+                  onToggleSaveCard={handleToggleSave}
+                />
+                <TopCountriesSection onSelectCountry={setSelectedCountry} />
+                <PackagesSection onSelectCountry={setSelectedCountry} />
+                <WorldToursSection onExplorePlace={goToContact} />
+              </>
+            )}
+
+            {activeTab === 'about' && (
+              <AboutPage onOpenContact={goToContact} onExploreDestinations={goToDestinations} />
+            )}
+
+            {activeTab === 'destinations' && (
+              <DestinationsCatalog
+                destinations={DESTINATIONS}
+                onOpenDetail={(dest) => setSelectedDestination(dest)}
+                savedIds={savedIds}
+                onToggleSave={handleToggleSave}
+                currency={currency}
+              />
+            )}
+
+            {activeTab === 'tour-packages' && <TourPackagesPage onOpenContact={goToContact} />}
+            {activeTab === 'visa-services' && <VisaServicesPage onOpenContact={goToContact} />}
+            {activeTab === 'flight-booking' && <FlightBookingPage onOpenContact={goToContact} />}
+            {activeTab === 'hotel-booking' && <HotelBookingPage onOpenContact={goToContact} />}
+            {activeTab === 'travel-insurance' && <TravelInsurancePage onOpenContact={goToContact} />}
+            {activeTab === 'gallery' && <GalleryPage />}
+            {activeTab === 'blog' && <BlogPage />}
+            {activeTab === 'faq' && <FAQPage />}
+            {activeTab === 'testimonials' && <TestimonialsPage />}
+            {activeTab === 'contact' && <ContactPage />}
+
+            {activeTab === 'privacy-policy' && <PrivacyPolicyPage />}
+            {activeTab === 'terms-conditions' && <TermsConditionsPage />}
+            {activeTab === 'cancellation-policy' && <CancellationPolicyPage />}
+
+            {activeTab === 'trips' && (
+              <MyTripsView
+                bookings={bookings}
+                savedDestinations={savedDestinations}
+                onOpenDetail={(dest) => setSelectedDestination(dest)}
+                onCancelBooking={handleCancelBooking}
+                onExploreDestinations={goToDestinations}
+                onToggleSave={handleToggleSave}
+                initialTab="trips"
+                currency={currency}
+              />
+            )}
+
+            {activeTab === 'favorites' && (
+              <MyTripsView
+                bookings={bookings}
+                savedDestinations={savedDestinations}
+                onOpenDetail={(dest) => setSelectedDestination(dest)}
+                onCancelBooking={handleCancelBooking}
+                onExploreDestinations={goToDestinations}
+                onToggleSave={handleToggleSave}
+                initialTab="saved"
+                currency={currency}
+              />
+            )}
           </>
-        )}
-
-        {activeTab === 'about' && (
-          <AboutPage onOpenContact={goToContact} onExploreDestinations={goToDestinations} />
-        )}
-
-        {activeTab === 'destinations' && (
-          <DestinationsCatalog
-            destinations={DESTINATIONS}
-            onOpenDetail={(dest) => setSelectedDestination(dest)}
-            savedIds={savedIds}
-            onToggleSave={handleToggleSave}
-            currency={currency}
-          />
-        )}
-
-        {activeTab === 'tour-packages' && <TourPackagesPage onOpenContact={goToContact} />}
-        {activeTab === 'visa-services' && <VisaServicesPage onOpenContact={goToContact} />}
-        {activeTab === 'flight-booking' && <FlightBookingPage onOpenContact={goToContact} />}
-        {activeTab === 'hotel-booking' && <HotelBookingPage onOpenContact={goToContact} />}
-        {activeTab === 'travel-insurance' && <TravelInsurancePage onOpenContact={goToContact} />}
-        {activeTab === 'gallery' && <GalleryPage />}
-        {activeTab === 'blog' && <BlogPage />}
-        {activeTab === 'faq' && <FAQPage />}
-        {activeTab === 'testimonials' && <TestimonialsPage />}
-        {activeTab === 'contact' && <ContactPage />}
-
-        {activeTab === 'privacy-policy' && <PrivacyPolicyPage />}
-        {activeTab === 'terms-conditions' && <TermsConditionsPage />}
-        {activeTab === 'cancellation-policy' && <CancellationPolicyPage />}
-
-        {activeTab === 'trips' && (
-          <MyTripsView
-            bookings={bookings}
-            savedDestinations={savedDestinations}
-            onOpenDetail={(dest) => setSelectedDestination(dest)}
-            onCancelBooking={handleCancelBooking}
-            onExploreDestinations={goToDestinations}
-            onToggleSave={handleToggleSave}
-            initialTab="trips"
-            currency={currency}
-          />
-        )}
-
-        {activeTab === 'favorites' && (
-          <MyTripsView
-            bookings={bookings}
-            savedDestinations={savedDestinations}
-            onOpenDetail={(dest) => setSelectedDestination(dest)}
-            onCancelBooking={handleCancelBooking}
-            onExploreDestinations={goToDestinations}
-            onToggleSave={handleToggleSave}
-            initialTab="saved"
-            currency={currency}
-          />
         )}
       </main>
 
-      <Footer onNavigate={setActiveTab} />
+      <Footer onNavigate={handleSetActiveTab} />
 
       {/* Detailed Sanctuary Modal */}
       {selectedDestination && (
@@ -304,7 +326,7 @@ export default function App() {
         regions={CONTINENT_REGIONS}
         currentRegionIndex={regionIndex}
         onSelectRegion={setRegionIndex}
-        onNavigateTab={setActiveTab}
+        onNavigateTab={handleSetActiveTab}
         savedCount={savedIds.length}
         tripsCount={bookings.length}
       />

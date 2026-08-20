@@ -53,13 +53,19 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenM
       id="main-navigation-header"
       className="fixed top-0 left-0 right-0 z-40 px-6 sm:px-10 lg:px-14 py-6 transition-all duration-300 bg-transparent"
     >
-      {/* 3-column grid keeps the center nav mathematically centered */}
-      <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center">
+      {/*
+        Mobile-first flex (logo/menu at opposite ends) up to xl, where we switch to a
+        3-column grid so the center pill nav can sit mathematically centered.
+        NB: a plain grid here is fragile — once the hidden <nav> stops being a grid
+        item below xl, CSS auto-placement drops the menu button into the middle
+        track instead of the third one, visually centering it. Flex has no such trap.
+      */}
+      <div className="w-full flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr]">
         {/* Left: Brand Logo — Connect Holidayss */}
         <div
           id="connect-holidayss-brand-logo"
           onClick={() => setActiveTab('home')}
-          className="justify-self-start flex items-center cursor-pointer select-none group"
+          className="flex items-center cursor-pointer select-none group xl:justify-self-start"
         >
           <img
             src="/images/connect_holidayss.png"
@@ -69,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenM
         </div>
 
         {/* Center Navigation: pill-shaped glass capsule with a sliding active highlight */}
-        <nav className="hidden xl:flex justify-self-center items-center gap-0.5 p-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[13px] font-medium shadow-sm">
+        <nav className="hidden xl:flex xl:justify-self-center items-center gap-0.5 p-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[13px] font-medium shadow-sm">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.tab}
@@ -157,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenM
         </nav>
 
         {/* Right: mobile/tablet menu trigger — full menu lives in the drawer below xl */}
-        <div className="justify-self-end flex items-center">
+        <div className="flex items-center xl:justify-self-end">
           <button
             id="header-menu-btn"
             onClick={onOpenMenu}

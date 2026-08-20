@@ -1,11 +1,16 @@
 import React, { useRef } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Globe2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Globe2, ArrowRight } from 'lucide-react';
 import { TOP_COUNTRIES } from '../data/topCountries';
+import { TopCountry } from '../types';
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
-export const TopCountriesSection: React.FC = () => {
+interface TopCountriesSectionProps {
+  onSelectCountry: (country: TopCountry) => void;
+}
+
+export const TopCountriesSection: React.FC<TopCountriesSectionProps> = ({ onSelectCountry }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const scrollByCard = (direction: 1 | -1) => {
@@ -70,11 +75,17 @@ export const TopCountriesSection: React.FC = () => {
             <motion.div
               key={entry.id}
               data-country-card
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCountry(entry)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') onSelectCountry(entry);
+              }}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: (i % 5) * 0.06, ease: easeOut }}
-              className="relative shrink-0 w-[240px] sm:w-[270px] h-[360px] sm:h-[400px] rounded-3xl overflow-hidden snap-start group cursor-default shadow-lg shadow-black/30"
+              className="relative shrink-0 w-[240px] sm:w-[270px] h-[360px] sm:h-[400px] rounded-3xl overflow-hidden snap-start group cursor-pointer shadow-lg shadow-black/30 outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
             >
               <img
                 src={entry.image}
@@ -98,6 +109,9 @@ export const TopCountriesSection: React.FC = () => {
                 <p className="mt-1.5 text-xs text-white/70 leading-relaxed">
                   {entry.places.join(' · ')}
                 </p>
+                <span className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                  View Packages <ArrowRight className="w-3 h-3" />
+                </span>
               </div>
             </motion.div>
           ))}

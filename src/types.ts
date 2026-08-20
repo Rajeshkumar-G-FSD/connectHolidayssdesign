@@ -126,3 +126,15 @@ export interface TopCountry {
   places: string[];
   image: string;
 }
+
+export interface TourPackageTier {
+  name: string;
+  priceINR: number;
+  description: string;
+}
+
+export interface ItineraryDay {
+  day: number;
+  title: string;
+  description: string;
+}
