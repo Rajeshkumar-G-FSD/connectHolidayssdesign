@@ -305,7 +305,6 @@ export default function App() {
                   currentRegionIndex={regionIndex}
                   onSelectRegionIndex={setRegionIndex}
                   onExploreContinent={handleExploreContinent}
-                  onSelectCard={handleSelectCard}
                   savedCardIds={savedIds}
                   onToggleSaveCard={handleToggleSave}
                 />

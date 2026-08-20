@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bookmark, ArrowRight } from 'lucide-react';
-import { ContinentRegion, DestinationCard } from '../types';
+import { ContinentRegion } from '../types';
 
 interface HeroExploreProps {
   regions: ContinentRegion[];
   currentRegionIndex: number;
   onSelectRegionIndex: (index: number) => void;
   onExploreContinent: (region: ContinentRegion) => void;
-  onSelectCard: (card: DestinationCard) => void;
   savedCardIds: string[];
   onToggleSaveCard: (id: string, e: React.MouseEvent) => void;
 }
@@ -26,7 +25,6 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
   currentRegionIndex,
   onSelectRegionIndex,
   onExploreContinent,
-  onSelectCard,
   savedCardIds,
   onToggleSaveCard,
 }) => {
@@ -269,9 +267,9 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
                       {/* Photo card */}
                       <div
                         onClick={() => {
-                          if (isActive) {
-                            onSelectCard(card);
-                          } else {
+                          // Hero slides only change the active destination. Opening
+                          // the destination detail modal is intentionally disabled here.
+                          if (!isActive) {
                             setActiveCardIndex(actualIndex);
                             setProgressKey((k) => k + 1);
                           }
