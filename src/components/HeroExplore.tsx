@@ -169,10 +169,10 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
         {/* Main Grid: Left Continent Hierarchy + Right Multi-Card Filmstrip */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto w-full">
 
-          {/* Left Column: Vertical Region Text Stack (Africa -> Asia -> Australia) */}
+          {/* Left Column: Vertical Region Text Stack */}
           <div className="lg:col-span-5 xl:col-span-5 pl-4 sm:pl-8 flex flex-col justify-center">
 
-            {/* Ghost Previous Continent (e.g. Africa) */}
+            {/* Ghost Previous Continent */}
             <div
               onClick={handlePrevRegion}
               className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white/20 tracking-tight font-['Outfit',sans-serif] cursor-pointer hover:text-white/40 transition-colors select-none mb-1 sm:mb-2 transform -translate-y-1"
@@ -222,7 +222,7 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
               </button>
             </div>
 
-            {/* Ghost Next Continent (e.g. Australia) */}
+            {/* Ghost Next Continent */}
             <div
               onClick={handleNextRegion}
               className="mt-6 sm:mt-8 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white/20 tracking-tight font-['Outfit',sans-serif] cursor-pointer hover:text-white/40 transition-colors select-none transform translate-y-1"

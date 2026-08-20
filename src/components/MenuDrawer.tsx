@@ -109,7 +109,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
           {/* Continents & Regions Switcher */}
           <div className="mt-8 pt-6 border-t border-white/10">
             <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-3">
-              Explore Continents
+              Explore Destinations
             </span>
             <div className="space-y-2">
               {regions.map((region, idx) => (
@@ -126,7 +126,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   }`}
                 >
                   <span className="text-base font-['Outfit',sans-serif]">{region.name}</span>
-                  <span className="text-xs text-neutral-400 font-mono">0{region.indexNum} / 06</span>
+                  <span className="text-xs text-neutral-400 font-mono">0{region.indexNum} / 0{region.totalNum}</span>
                 </button>
               ))}
             </div>

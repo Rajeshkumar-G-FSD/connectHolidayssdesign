@@ -120,7 +120,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
           {[
             { id: 'india', title: 'India', count: '20 locations', copy: 'Classic holidays across India' },
             { id: 'south-india', title: 'South India', count: '30 locations', copy: 'Kerala, Tamil Nadu & hill escapes' },
-            { id: 'worldwide', title: 'Worldwide Tour', count: '100 locations', copy: 'International handpicked tours' },
+            { id: 'worldwide', title: 'Worldwide Tour', count: '13 locations', copy: 'International handpicked tours' },
           ].map((collection) => (
             <button
               key={collection.id}
@@ -237,7 +237,7 @@ export const DestinationsCatalog: React.FC<DestinationsCatalogProps> = ({
           <section className="mb-10">
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">100 worldwide locations</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">13 worldwide locations</p>
                 <h3 className="mt-1 text-2xl font-bold">World Tour packages</h3>
               </div>
               <span className="text-xs text-neutral-400">{filteredWorldTours.length} matching tours</span>

@@ -48,7 +48,7 @@ const getInitialCountry = (): TopCountry | null => {
 
 export default function App() {
   const [activeTab, setActiveTabState] = useState<ActiveTab>(() => getTabForPath(window.location.pathname));
-  const [regionIndex, setRegionIndex] = useState<number>(0); // 0 is Asia (index 5 of 6 matching screenshot)
+  const [regionIndex, setRegionIndex] = useState<number>(0); // single curated "Asia" region
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [selectedCountry, setSelectedCountryState] = useState<TopCountry | null>(getInitialCountry);
 
