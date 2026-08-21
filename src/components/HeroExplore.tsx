@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Bookmark, ArrowRight } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 import { ContinentRegion } from '../types';
 
 interface HeroExploreProps {
   regions: ContinentRegion[];
   currentRegionIndex: number;
   onSelectRegionIndex: (index: number) => void;
-  onExploreContinent: (region: ContinentRegion) => void;
   savedCardIds: string[];
   onToggleSaveCard: (id: string, e: React.MouseEvent) => void;
 }
@@ -24,7 +23,6 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
   regions,
   currentRegionIndex,
   onSelectRegionIndex,
-  onExploreContinent,
   savedCardIds,
   onToggleSaveCard,
 }) => {
@@ -166,76 +164,15 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
       {/* Main Content Layout */}
       <div className="w-full h-full max-w-[1720px] mx-auto px-6 sm:px-14 lg:px-20 pt-28 pb-10 flex flex-col justify-between z-10">
 
-        {/* Main Grid: Left Continent Hierarchy + Right Multi-Card Filmstrip */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto w-full">
+        {/* Multi-Card Filmstrip */}
+        <div className="my-auto w-full">
+          {/* Kept for SEO/accessibility only — no longer shown visually */}
+          <h1 className="sr-only">{currentRegion.name}: {currentRegion.description}</h1>
 
-          {/* Left Column: Vertical Region Text Stack */}
-          <div className="lg:col-span-5 xl:col-span-5 pl-4 sm:pl-8 flex flex-col justify-center">
-
-            {/* Ghost Previous Continent */}
-            <div
-              onClick={handlePrevRegion}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white/20 tracking-tight font-['Outfit',sans-serif] cursor-pointer hover:text-white/40 transition-colors select-none mb-1 sm:mb-2 transform -translate-y-1"
-            >
-              {currentRegion.prevName}
-            </div>
-
-            {/* Active Continent (e.g. Asia) */}
-            <AnimatePresence mode="wait">
-              <motion.h1
-                key={currentRegion.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.4 }}
-                className="text-6xl sm:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[130px] font-extrabold text-white tracking-tight font-['Outfit',sans-serif] drop-shadow-md leading-none py-1"
-              >
-                {currentRegion.name}
-              </motion.h1>
-            </AnimatePresence>
-
-            {/* Description matching screenshot paragraph */}
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={`desc-${currentRegion.id}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="mt-4 sm:mt-5 text-white/90 text-sm sm:text-base max-w-[420px] font-light leading-relaxed drop-shadow-sm"
-              >
-                {currentRegion.description}
-              </motion.p>
-            </AnimatePresence>
-
-            {/* Explore Button: solid sage pill with an attached circular arrow accent, matching screenshot */}
-            <div className="mt-6 sm:mt-8">
-              <button
-                id="hero-exact-explore-btn"
-                onClick={() => onExploreContinent(currentRegion)}
-                className="group relative inline-flex items-center h-12 sm:h-[54px] pl-6 sm:pl-7 pr-1.5 rounded-full bg-[#4f7c66] hover:bg-[#436b57] text-white font-medium text-sm shadow-lg shadow-black/25 transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-98"
-              >
-                <span className="mr-9 sm:mr-11">Explore</span>
-                <span className="flex h-9 w-9 sm:h-[42px] sm:w-[42px] items-center justify-center rounded-full bg-[#6f9f87] group-hover:bg-[#7cae93] transition-all duration-200">
-                  <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
-                </span>
-              </button>
-            </div>
-
-            {/* Ghost Next Continent */}
-            <div
-              onClick={handleNextRegion}
-              className="mt-6 sm:mt-8 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white/20 tracking-tight font-['Outfit',sans-serif] cursor-pointer hover:text-white/40 transition-colors select-none transform translate-y-1"
-            >
-              {currentRegion.nextName}
-            </div>
-
-          </div>
-
-          {/* Right Column: horizontal filmstrip of destination cards, bottom-aligned with staggered heights */}
-          <div className="lg:col-span-7 xl:col-span-7 relative min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-end justify-start overflow-hidden">
+          {/* Horizontal filmstrip of destination cards, bottom-aligned with staggered heights */}
+          <div className="relative min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-end justify-start lg:justify-end overflow-hidden">
             <div className="flex items-end gap-4 sm:gap-5 lg:gap-6">
-              <AnimatePresence initial={false}>
+              <AnimatePresence initial={false} mode="popLayout">
                 {visibleCards.map(({ card, actualIndex, size }, i) => {
                   const isActive = i === 0;
                   const isSaved = savedCardIds.includes(card.id);
@@ -243,10 +180,10 @@ export const HeroExplore: React.FC<HeroExploreProps> = ({
                     <motion.div
                       key={card.id}
                       layout
-                      initial={{ opacity: 0, x: 28 }}
+                      initial={{ opacity: 0, x: 90 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -18 }}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      exit={{ opacity: 0, x: -90 }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                       className={`shrink-0 flex flex-col gap-2.5 ${size.wrapper}`}
                     >
                       {/* Title + rating dots sit above the photo, matching screenshot */}

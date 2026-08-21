@@ -10,16 +10,19 @@ interface CountryPricing {
 // Approximate per-person INR pricing for a full international/domestic package,
 // reflecting each country's typical travel cost.
 const PRICING: Record<string, CountryPricing> = {
-  japan: { budget: 65000, standard: 95000, premium: 145000 },
-  italy: { budget: 78000, standard: 110000, premium: 165000 },
-  france: { budget: 72000, standard: 105000, premium: 158000 },
-  indonesia: { budget: 42000, standard: 62000, premium: 95000 },
-  greece: { budget: 75000, standard: 108000, premium: 160000 },
-  uae: { budget: 48000, standard: 68000, premium: 98000 },
   thailand: { budget: 35000, standard: 52000, premium: 78000 },
+  cambodia: { budget: 32000, standard: 48000, premium: 72000 },
+  malaysia: { budget: 34000, standard: 50000, premium: 76000 },
+  dubai: { budget: 48000, standard: 68000, premium: 98000 },
+  andaman: { budget: 28000, standard: 42000, premium: 62000 },
+  laos: { budget: 36000, standard: 54000, premium: 80000 },
+  kazakhstan: { budget: 55000, standard: 78000, premium: 115000 },
+  'sri-lanka': { budget: 30000, standard: 45000, premium: 68000 },
+  maldives: { budget: 60000, standard: 85000, premium: 130000 },
   vietnam: { budget: 38000, standard: 55000, premium: 82000 },
-  australia: { budget: 95000, standard: 135000, premium: 195000 },
-  switzerland: { budget: 105000, standard: 145000, premium: 210000 },
+  bali: { budget: 40000, standard: 58000, premium: 88000 },
+  singapore: { budget: 55000, standard: 78000, premium: 115000 },
+  china: { budget: 58000, standard: 82000, premium: 120000 },
 };
 
 const TIER_LABELS = ['Explorer', 'Adventure', 'Premium Escape'];

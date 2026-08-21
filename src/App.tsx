@@ -3,7 +3,7 @@ import { DESTINATIONS } from './data/destinations';
 import { WORLD_TOUR_PACKAGES } from './data/worldTourPackages';
 import { CONTINENT_REGIONS } from './data/regions';
 import { TOP_COUNTRIES } from './data/topCountries';
-import { ActiveTab, Booking, Destination, DestinationCard, ContinentRegion, TopCountry } from './types';
+import { ActiveTab, Booking, Destination, DestinationCard, TopCountry } from './types';
 import {
   TAB_TITLES,
   getTabForPath,
@@ -270,10 +270,6 @@ export default function App() {
     }
   };
 
-  const handleExploreContinent = (region: ContinentRegion) => {
-    navigateToTab('destinations');
-  };
-
   const goToContact = () => navigateToTab('contact');
   const goToDestinations = () => navigateToTab('destinations');
 
@@ -305,7 +301,6 @@ export default function App() {
                   regions={CONTINENT_REGIONS}
                   currentRegionIndex={regionIndex}
                   onSelectRegionIndex={setRegionIndex}
-                  onExploreContinent={handleExploreContinent}
                   savedCardIds={savedIds}
                   onToggleSaveCard={handleToggleSave}
                 />

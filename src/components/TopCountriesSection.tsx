@@ -39,7 +39,7 @@ export const TopCountriesSection: React.FC<TopCountriesSectionProps> = ({ onSele
               <span>Worldwide Favorites</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Outfit',sans-serif] tracking-tight text-white">
-              Top 10 Countries to Explore
+              Top 13 Countries to Explore
             </h2>
             <p className="mt-2 text-neutral-400 max-w-xl text-sm sm:text-base font-light">
               The world's most-loved destinations, handpicked with their must-see cities and landmarks.
