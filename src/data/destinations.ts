@@ -13,9 +13,9 @@ export const DESTINATIONS: Destination[] = [
     reviewCount: 128,
     pricePerNight: 480,
     currency: '$',
-    coverImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85',
+    coverImage: 'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1920&q=85',
     gallery: [
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Infinity pool over tea estate
+      'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1920&q=85', // Infinity pool over tea estate
       'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=85', // Luxury resort balcony
       'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=85', // Luxury terrace view
       'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=85', // Resort pool deck morning
@@ -163,7 +163,7 @@ export const DESTINATIONS: Destination[] = [
     gallery: [
       'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1920&q=85', // Munnar mist hills
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=85', // Misty landscape
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool view
+      'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1920&q=85', // Pool view
       'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=85', // Balcony
     ],
     vibe: 'Cloud Forest & Spice Plantation Hideaway',
@@ -285,7 +285,7 @@ export const DESTINATIONS: Destination[] = [
     gallery: [
       'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=85', // Bali lush
       'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1920&q=85', // Bali landscape
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool
+      'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1920&q=85', // Pool
     ],
     vibe: 'Bamboo Masterpiece & River Valley Plunge Pool',
     category: 'rainforest',
@@ -344,7 +344,7 @@ export const DESTINATIONS: Destination[] = [
     gallery: [
       'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=85', // Japan mountain
       'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1920&q=85', // Japan traditional
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=85', // Pool
+      'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1920&q=85', // Pool
     ],
     vibe: 'Private Natural Onsen & Zen Cedar Architecture',
     category: 'mountain',

@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Globe2, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Globe2, ArrowRight, Grid3X3, Rows3 } from 'lucide-react';
 import { TOP_COUNTRIES } from '../data/topCountries';
 import { TopCountry } from '../types';
+import ImageSlider3D from './ImageSlider3D';
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -12,6 +13,7 @@ interface TopCountriesSectionProps {
 
 export const TopCountriesSection: React.FC<TopCountriesSectionProps> = ({ onSelectCountry }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [viewMode, setViewMode] = useState<'carousel' | '3d'>('carousel');
 
   const scrollByCard = (direction: 1 | -1) => {
     const el = scrollerRef.current;
@@ -20,6 +22,13 @@ export const TopCountriesSection: React.FC<TopCountriesSectionProps> = ({ onSele
     const step = card ? card.offsetWidth + 20 : 300;
     el.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
+
+  // Convert countries to 3D slider format with country name, flag, and image
+  const sliderItems = TOP_COUNTRIES.map(country => ({
+    image: country.image,
+    country: country.country,
+    flag: country.flag,
+  }));
 
   return (
     <section id="top-countries-section" className="bg-neutral-950 py-16 sm:py-20 px-6 sm:px-14 lg:px-20">
@@ -46,76 +55,127 @@ export const TopCountriesSection: React.FC<TopCountriesSectionProps> = ({ onSele
             </p>
           </div>
 
-          {/* Prev / Next arrows */}
+          {/* View Mode Toggle + Navigation */}
           <div className="hidden sm:flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => scrollByCard(-1)}
-              title="Scroll left"
-              className="w-11 h-11 rounded-full bg-neutral-900 border border-white/10 hover:bg-neutral-800 flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => scrollByCard(1)}
-              title="Scroll right"
-              className="w-11 h-11 rounded-full bg-neutral-900 border border-white/10 hover:bg-neutral-800 flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            {/* View Mode Toggle Buttons */}
+            <div className="flex items-center gap-2 bg-neutral-900 border border-white/10 rounded-full p-1">
+              <button
+                onClick={() => setViewMode('carousel')}
+                title="Carousel view"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  viewMode === 'carousel'
+                    ? 'bg-emerald-500/20 border border-emerald-400 text-emerald-400'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <Rows3 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('3d')}
+                title="3D carousel view"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  viewMode === '3d'
+                    ? 'bg-emerald-500/20 border border-emerald-400 text-emerald-400'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Navigation Arrows (only for carousel view) */}
+            {viewMode === 'carousel' && (
+              <>
+                <button
+                  onClick={() => scrollByCard(-1)}
+                  title="Scroll left"
+                  className="w-11 h-11 rounded-full bg-neutral-900 border border-white/10 hover:bg-neutral-800 flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => scrollByCard(1)}
+                  title="Scroll right"
+                  className="w-11 h-11 rounded-full bg-neutral-900 border border-white/10 hover:bg-neutral-800 flex items-center justify-center text-white transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
         </motion.div>
 
-        {/* Horizontal slide of country cards */}
-        <div
-          ref={scrollerRef}
-          className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {TOP_COUNTRIES.map((entry, i) => (
-            <motion.div
-              key={entry.id}
-              data-country-card
-              role="button"
-              tabIndex={0}
-              onClick={() => onSelectCountry(entry)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') onSelectCountry(entry);
-              }}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: (i % 5) * 0.06, ease: easeOut }}
-              className="relative shrink-0 w-[240px] sm:w-[270px] h-[360px] sm:h-[400px] rounded-3xl overflow-hidden snap-start group cursor-pointer shadow-lg shadow-black/30 outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-            >
-              <img
-                src={entry.image}
-                alt={entry.country}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/10" />
+        {/* Carousel or 3D Slider View */}
+        {viewMode === 'carousel' ? (
+          <div
+            ref={scrollerRef}
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {TOP_COUNTRIES.map((entry, i) => (
+              <motion.div
+                key={entry.id}
+                data-country-card
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelectCountry(entry)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') onSelectCountry(entry);
+                }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: (i % 5) * 0.06, ease: easeOut }}
+                className="relative shrink-0 w-[240px] sm:w-[270px] h-[360px] sm:h-[400px] rounded-3xl overflow-hidden snap-start group cursor-pointer shadow-lg shadow-black/30 outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              >
+                <img
+                  src={entry.image}
+                  alt={entry.country}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/10" />
 
-              {/* Rank badge */}
-              <span className="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-xs font-bold text-white">
-                {entry.rank.toString().padStart(2, '0')}
-              </span>
-
-              {/* Country name + top places */}
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <h3 className="flex items-center gap-2 text-xl font-bold text-white font-['Outfit',sans-serif] drop-shadow-sm">
-                  <span>{entry.flag}</span>
-                  <span>{entry.country}</span>
-                </h3>
-                <p className="mt-1.5 text-xs text-white/70 leading-relaxed">
-                  {entry.places.join(' · ')}
-                </p>
-                <span className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity">
-                  View Packages <ArrowRight className="w-3 h-3" />
+                {/* Rank badge */}
+                <span className="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-xs font-bold text-white">
+                  {entry.rank.toString().padStart(2, '0')}
                 </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+
+                {/* Country name + top places */}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <h3 className="flex items-center gap-2 text-xl font-bold text-white font-['Outfit',sans-serif] drop-shadow-sm">
+                    <span>{entry.flag}</span>
+                    <span>{entry.country}</span>
+                  </h3>
+                  <p className="mt-1.5 text-xs text-white/70 leading-relaxed">
+                    {entry.places.join(' · ')}
+                  </p>
+                  <span className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                    View Packages <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: easeOut }}
+            className="flex items-center justify-center"
+          >
+            <ImageSlider3D
+              items={sliderItems}
+              duration={40}
+              cardWidth="15em"
+              cardAspectRatio="7/10"
+              perspective="40em"
+              containerClassName="shadow-2xl shadow-black/50"
+              rotationDirection="left"
+              withMask={true}
+            />
+          </motion.div>
+        )}
       </div>
     </section>
   );

@@ -7,7 +7,7 @@ const ARTICLES = [
     title: 'Top 10 Hidden Tea Estate Escapes Across Asia in 2026',
     date: 'August 14, 2026',
     category: 'Curated Escapes',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=800&q=80',
     summary: 'From the mist-shrouded hills of Nuwara Eliya to the high peaks of Ooty and Munnar, explore boutique wooden chalets with heated infinity pools.',
   },
   {

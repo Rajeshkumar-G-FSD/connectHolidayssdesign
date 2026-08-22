@@ -223,7 +223,7 @@ export default function App() {
         coverImage: card.image,
         gallery: [
           card.image,
-          'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1761442663511-2558e561f15e?auto=format&fit=crop&w=1200&q=80',
           'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80',
         ],
         description: `${card.title} in ${card.location} is an extraordinary luxury escape nestled amidst ancient natural landscapes. Featuring handcrafted architectural finishes, sweeping panoramic verandas, and curated bespoke experiences.`,
@@ -330,7 +330,7 @@ export default function App() {
             {activeTab === 'flight-booking' && <FlightBookingPage onOpenContact={goToContact} />}
             {activeTab === 'hotel-booking' && <HotelBookingPage onOpenContact={goToContact} />}
             {activeTab === 'travel-insurance' && <TravelInsurancePage onOpenContact={goToContact} />}
-            {activeTab === 'gallery' && <GalleryPage />}
+            {activeTab === 'gallery' && <GalleryPage onExploreDestinations={goToDestinations} />}
             {activeTab === 'blog' && <BlogPage />}
             {activeTab === 'faq' && <FAQPage />}
             {activeTab === 'testimonials' && <TestimonialsPage />}
